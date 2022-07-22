@@ -1,0 +1,106 @@
+
+
+
+
+
+
+
+The below doesn't work, since one cannot pass
+kw to both Graphh and drawgraph
+
+
+# w is node weights
+function shaded_graph(links, x, w, noderadius = 9; kw...)
+    graphstyle_nodefn = shaded_graph_style(w, noderadius)
+    graph = Graph(;nodefn = graphstyle_nodefn, kw...)
+    drawgraph(links, x; graph, kw...)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#------------------------------------------------------------------------------
+
+ - naming: don't append type (list,dict) to variable names
+
+
+ - overwriting Cairo names is a bad idea, except if its changing the API
+   for the same function
+ - using functions named the same as Structs is a bad idea
+ 
+ - Don't have a function called plot which is not dispatched by type.
+
+# order of arguments
+#  (style before data, since data may be untyped)
+#  (ax, ctx, first two since that is how we wrap Cairo functions)
+#   axmap, ctx, axis, style, data
+
+# function,    object,         Type
+#
+#  lineplot,      x             x
+#  graphplot,  graphstyle,  GraphStyle 
+#  phaseplot,  phasestyle    PhaseStyle
+#   visplot     visstyle     VisStyle
+#  timingplot  timingstyle  TimingStyle
+
+
+# function,    object,         Options
+#
+#  drawplot	   Plot		plot_color
+#  drawbar          Bar		bar_width
+#  drawimage      Image		image_grid
+#               Contour		contour_step
+#                  Stem		stem_radius
+#
+#  drawgraph      Graph
+#  drawphase      Phase
+#  drawframes    Frames
+#  drawtiming    Timing
+#  
+#
+
+
+Drawables store a sequence of Cairo drawing operations.
+The advantage of this is that it means we can put diagrams
+next to each other easily.
+
+We want to provide as few variants as possible. The core kind is
+a top-level oneline plotting function.
+
+function lineplot(data; kwargs...)
+    axis = Axis(data; kwargs...)
+    d = Drawable(axis)
+    over(d) do ctx
+        lineplot(axis.ax, ctx, data; kwargs...)
+    end
+    return d
+end
+
+which calls a function that can plot onto a given ax, ctx, so that it's usable
+easy to build plots sequentially.
+
+function lineplot(ax::AxisMap, ctx::CairoContext, data; linestyle = nothing, kwargs...)
+    for (i,j,x) in DataIndices(data)
+        ls = ifnotnothing(linestyle, LineStyle(color(i,j) , 1))
+        line(ax, ctx, x; linestyle = ls)
+    end
+end
+
+If you have a function f(ctx) which draws, you can render it as follows.
+
+    d = Drawable(f, 800, 600) 
+    save(d, "basic38.png")
+
+axis.ax should really be axis.axmap
+
+
