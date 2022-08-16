@@ -383,6 +383,20 @@ function makepdfsurface(width, height, fname)
     return surface, ctx
 end
 
+
+
+"""
+     makesvgsurface(width, height, fname)
+
+Create a Cairo surface for writing to svg file fname.
+"""
+function makesvgsurface(width, height, fname)
+    surface = CairoSVGSurface(fname, width, height)
+    ctx = CairoContext(surface)
+    return surface, ctx
+end
+
+
 """
     makepngsurface(width, height)
 
@@ -403,6 +417,8 @@ Create a Cairo surface with given width/height. Determine type from the file ext
 function makesurface(width, height, fname)
     if lowercase(fname[end-2:end]) == "png"
         surface, ctx = makepngsurface(width, height)
+    elseif lowercase(fname[end-2:end]) == "svg"
+        surface, ctx = makesvgsurface(width, height, fname)
     else
         surface, ctx = makepdfsurface(width, height, fname)
     end
