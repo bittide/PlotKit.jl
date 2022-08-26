@@ -295,7 +295,25 @@ function make_pseudo_random_colors()
     return cmap
 end
 
-const default_colors = make_pseudo_random_colors()
+function css_colors()
+    tomato = hexcol(0xFF6347)
+    yellowgreen = hexcol(0x9ACD32)
+    steelblue = hexcol(0x4682B4)
+    gold = hexcol(0xDAA520)
+    darkred = hexcol(0x8b0000)
+    darkgreen = hexcol(0x006400)
+    midnightblue = hexcol(0x191970)
+    darkorange = hexcol(0xff8c00)
+    salmon = hexcol(0xfa8072)
+    lightgreen = hexcol(0x90ee90)
+    lightblue = hexcol(0xadd8e6)
+    moccasin = hexcol(0xFFE4B5)
+    return [tomato, yellowgreen, steelblue, gold,
+            darkred, darkgreen, midnightblue, darkorange,
+            salmon, lightgreen, lightblue, moccasin]
+end
+
+const default_colors =   vcat(css_colors(), make_pseudo_random_colors())
 
 """
     colormap(i)
