@@ -36,6 +36,9 @@ function gradientalg(f, df, epochs, x0)
                 eta = 0.5 * eta
                 theta .+= dtheta
             end
+            if sum(abs.(dtheta)) < 1e-16
+                return theta
+            end
         end
         oldrisk = newrisk
     end
