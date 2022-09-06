@@ -13,6 +13,7 @@ export graphlayout, meshlayout
 #, meshlayout, shaded_graph, edgeweights_graph
 
 function gradientalg(f, df, epochs, x0)
+    const minstepsize = 1e-16
     eta = 0.05
     theta = x0
     oldrisk = f(theta)
@@ -36,7 +37,7 @@ function gradientalg(f, df, epochs, x0)
                 eta = 0.5 * eta
                 theta .+= dtheta
             end
-            if sum(abs.(dtheta)) < 1e-16
+            if sum(abs.(dtheta)) < minstepsize
                 return theta
             end
         end
