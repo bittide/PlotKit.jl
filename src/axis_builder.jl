@@ -140,3 +140,4 @@ end
 Axis(p; kw...) = Axis(p, parse_axis_options(; kw...))
 
 Axis(; kw...) = Axis(missing; kw...)
+
