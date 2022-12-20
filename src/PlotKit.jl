@@ -24,7 +24,7 @@ CairoTools.draw(cw::CairoWindow) = CairoGL.draw(cw)
 # exports 
 
 # basic.jl
-export @plotfns, DataIndices, getbox, setoptions!, expand_box
+export @plotfns, DataIndices, getbox, setoptions!, expand_box, overdata
 
 # axis.jl
 export AxisMap, Ticks, best_labels, best_ticks, get_tick_extents

@@ -179,7 +179,17 @@ function setoptions!(d, prefix, kwargs...)
 end
 
 ##############################################################################
-# images
+#
+
+function overdata(f, data; clip = true, kw...)
+    axis = Axis(data; kw...)
+    d = Drawable(axis)
+    over(d; clip) do ctx
+        f(axis.ax, ctx, data)
+    end
+    return d
+end
+
 
 
 
