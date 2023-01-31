@@ -2,7 +2,8 @@ module PlotKit
 
 using Cairo
 
-
+include("tools.jl")
+using .Tools
 
 # These do not depend on PlotKit
 include("cairotools.jl")
