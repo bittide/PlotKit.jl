@@ -1,7 +1,7 @@
 
 # functions for laying out drawables
 
-function hbox(r1::T, r2::T; windowbackgroundcolor = (1,1,1)) where T <: Drawable
+function hbox(r1::T, r2::T; windowbackgroundcolor = Color(:white)) where T <: Drawable
     width = r1.width + r2.width
     height = max(r1.height, r2.height)
     r = T(width, height)
@@ -13,7 +13,7 @@ function hbox(r1::T, r2::T; windowbackgroundcolor = (1,1,1)) where T <: Drawable
     return r
 end
 
-function vbox(r1::T, r2::T; windowbackgroundcolor = (1,1,1)) where T <: Drawable
+function vbox(r1::T, r2::T; windowbackgroundcolor = Color(:white)) where T <: Drawable
     width = max(r1.width, r2.width)
     height = r1.height + r2.height
     r = T(width, height)
@@ -27,7 +27,7 @@ end
 
 
 # position f2 relative to f1
-function offset(f1::T, f2::T, dx, dy;  windowbackgroundcolor = (1,1,1)) where T <: Drawable
+function offset(f1::T, f2::T, dx, dy;  windowbackgroundcolor = Color(:white)) where T <: Drawable
     left = min(0, dx)
     top = min(0, dy)
     right = max(f1.width, f2.width + dx)
