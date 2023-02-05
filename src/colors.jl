@@ -4,7 +4,7 @@ module Colors
 using LinearAlgebra
 using ..Tools
 
-export Color3, Color4, Color, colormap
+export Color3, Color4, Color, colormap, interp, hadamard
 
 abstract type Color end
 
@@ -29,6 +29,7 @@ Color(r,g,b,a) = Color4(r,g,b,a)
 Color(x::Tuple{Any,Any,Any}) = Color3(x)
 Color(x::Tuple{Any,Any,Any,Any}) = Color4(x)
 Color(x::Symbol) = color_names[x]
+
 
 ##############################################################################
 # color functions

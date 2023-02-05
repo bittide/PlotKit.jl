@@ -1,4 +1,8 @@
 
+#
+# AxisStyle specifies how to draw the axis. It
+# is set by the user
+#
 Base.@kwdef mutable struct AxisStyle
     drawbox = false
     edgelinestyle = LineStyle(Color(:black), 2)
@@ -17,6 +21,20 @@ Base.@kwdef mutable struct AxisStyle
     title = ""
 end
 
+#
+# We use Axis to draw the axis, in addition to the axisstyle.
+# Axis also contains information about the window:
+#
+#   width, height, windowbackgroundcolor, drawbackground,
+#
+# and information about the axis which is not style
+#
+#   ticks, box, yoriginatbottom
+#
+# and the AxisStyle object as. All of this is necessary to draw the axis.
+#
+# We use AxisMap to draw the graph on the axis.
+#
 mutable struct Axis
     width            # in pixels, including margins
     height           # in pixels, including margins
@@ -29,6 +47,15 @@ mutable struct Axis
     drawbackground   # bool
 end
 
+#
+# AxisOptions is passed to the Axis constructor,
+# which creates the Axis object above. It contains the style
+# information for drawing the axis, in AxisStyle
+# and the information used to construct the AxisMap, and the layout
+# within the window.
+#
+# AxisOptions are set by the user
+#
 Base.@kwdef mutable struct AxisOptions
     xmin = -Inf
     xmax = Inf

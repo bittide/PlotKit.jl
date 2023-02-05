@@ -3,10 +3,12 @@ module Tools
 
 using LinearAlgebra
 
-export makevector, interp
+export makevector, interp, normalize
 
 LinearAlgebra.norm(p) = sqrt(dot(p,p))
+
 interp(x, y, theta) = (1-theta)*x + theta*y
+normalize(x) = x/norm(x)
 
 
 
@@ -50,7 +52,9 @@ function makevector(T::DataType)
           Base.:*(p::$tname, a::Number) = a*p
           Base.length(x::$tname) = $(length(fnames))
           LinearAlgebra.dot(p::$tname, q::$tname) =  $(Expr(:call, :+, [:(p.$fld * q.$fld) for fld in fnames]...))
-
+          Base.vec(p::$tname) = $(Expr(:vect, [:(p.$fld) for fld in fnames]...))
+          hadamard(p::$tname, q::$tname) =  $(Expr(:call, tname, [:(p.$fld * q.$fld) for fld in fnames]...))
+          hadamarddiv(p::$tname, q::$tname) =  $(Expr(:call, tname, [:(p.$fld / q.$fld) for fld in fnames]...))
           # LinearAlgebra.norm(p::$tname) = sqrt($(Expr(:call, :+, [:(p.$fld * p.$fld) for fld in fnames]...)))
          end)
 end
