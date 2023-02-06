@@ -31,7 +31,14 @@ end
 #
 #   ticks, box, yoriginatbottom
 #
-# and the AxisStyle object as. All of this is necessary to draw the axis.
+# and the AxisStyle object as. Note that the AxisStyle object
+# is provided by the user, and unchanged, but the ticks, and box
+# are computed by the Axis constructor.
+#
+# yoriginatbottom comes from the AxisOptions, and affects
+# both the axis drawing and the axismap.
+#
+# All of this is necessary to draw the axis.
 #
 # We use AxisMap to draw the graph on the axis.
 #
@@ -55,6 +62,7 @@ end
 # within the window.
 #
 # AxisOptions are set by the user
+# They are only used to create the Axis object.
 #
 Base.@kwdef mutable struct AxisOptions
     xmin = -Inf
