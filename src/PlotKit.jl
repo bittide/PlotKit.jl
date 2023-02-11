@@ -106,7 +106,7 @@ export StraightPath, CurvedPath, BezierPath, Path
 export TriangularArrow, Arrow 
 
 # images
-export Pik, cairo_memory_surface_ctx, drawimage
+export Pik, cairo_memory_surface_ctx, drawimage, drawimage_to_mask
 
 # boxes
 export expand_box, inbox
