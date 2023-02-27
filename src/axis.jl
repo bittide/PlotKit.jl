@@ -7,6 +7,9 @@ struct AxisMap
     fx
     fy
     f
+    fxinv
+    fyinv
+    finv
 end
 
 
@@ -71,8 +74,11 @@ function AxisMap(w, h, (lmargin, rmargin, tmargin, bmargin), b::Box,
     end
     qfx = x -> tx * x + cx
     qfy = y -> ty * y + cy
+    qfxinv = x -> (x - cx)/tx
+    qfyinv = y -> (y - cy)/ty
     qf =  p::Point -> Point(qfx(p.x), qfy(p.y))
-    return AxisMap(qfx, qfy, qf)
+    qfinv =  p::Point -> Point(qfxinv(p.x), qfyinv(p.y))
+    return AxisMap(qfx, qfy, qf, qfxinv, qfyinv, qfinv)
 end
 
 
