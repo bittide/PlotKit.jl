@@ -1,13 +1,15 @@
 
 module CairoTools
 
+using LinearAlgebra
 using ..Cairo
+using ..Tools
 
 # structs
 export Point, LineStyle, Box
 
 # just data funs
-export norm, interp, star, triangle, oblong, curve_to_bezier, bezier_point,
+export star, triangle, oblong, curve_to_bezier, bezier_point,
     bezier2, curve_from_endpoints, split_bezier
 
 # colors
@@ -51,24 +53,13 @@ struct Point
     y::Number
 end
 
-# overloaded math 
-Base.:+(a::Point, b::Point) = Point(a.x + b.x, a.y + b.y)
-Base.:-(a::Point, b::Point) = Point(a.x - b.x, a.y - b.y)
-Base.:*(g::Number, a::Point) = Point(g*a.x, g*a.y)
-Base.:/(a::Point, g::Number) = Point(a.x/g, a.y/g)
+eval(makevector(Point))
+
 function Base.:*(A::Matrix, b::Point) 
     return  Point(A[1,1]*b.x + A[1,2]*b.y,  A[2,1]*b.x + A[2,2]*b.y)
 end
 
-# conversions
-Base.convert(::Type{Point}, x) = Point(x)
-Base.convert(::Type{Point}, x::Point) = x
-Point(x::Tuple) = Point(x[1], x[2])
-Point(a::Vector{Number}) = Point(a[1],a[2])
-
 # utils
-norm(a::Point) = sqrt(a.x*a.x + a.y*a.y)
-interp(x::Point, y::Point, theta) = (1-theta)*x + theta*y
 polar(r, theta) = Point(r*cos(theta), r*sin(theta))
 
 ##############################################################################
