@@ -5,7 +5,12 @@ using Cairo
 include("tools.jl")
 using .Tools
 
+include("colors.jl")
+# uses Tools
+using .Colors
+
 # These do not depend on PlotKit
+# CairoTools uses Color and Tools
 include("cairotools.jl")
 using .CairoTools
 
@@ -51,6 +56,10 @@ export hbox, vbox, hvbox, stack, offset
 # animator.jl
 export Anim, frame, see, save_frames
     
+#------------------------------------------------------------------------------
+# rexport from Colors
+
+export Color, Color3, Color4
 
 
 #------------------------------------------------------------------------------

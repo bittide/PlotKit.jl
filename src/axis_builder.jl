@@ -1,14 +1,14 @@
 
 Base.@kwdef mutable struct AxisStyle
     drawbox = false
-    edgelinestyle = LineStyle((0,0,0),2)
+    edgelinestyle = LineStyle(Color(:black), 2)
     drawaxisbackground = true
     xtickverticaloffset = 16
     ytickhorizontaloffset = -8
-    backgroundcolor = (0.917, 0.917, 0.949)
-    gridlinestyle = LineStyle((1,1,1), 1)
+    backgroundcolor = Color(:bluegray)
+    gridlinestyle = LineStyle(Color(:white), 1)
     fontsize = 13
-    fontcolor = (0,0,0)
+    fontcolor = Color(:black)
     drawxlabels = true
     drawylabels = true
     drawaxis = true
@@ -48,7 +48,7 @@ Base.@kwdef mutable struct AxisOptions
     yidealnumlabels = 10
     yoriginatbottom = true
     axisequal = false
-    windowbackgroundcolor = (1,1,1)
+    windowbackgroundcolor = Color(:white)
     drawbackground = true
     drawaxis = true
     ticks = Ticks()
