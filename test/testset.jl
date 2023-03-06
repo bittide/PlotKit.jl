@@ -72,7 +72,7 @@ function main1()
     d = plot(data)
     over(d) do ctx
         for p in data
-            circle(d.axis.ax, ctx, p, 2; fillcolor=(0,0,0.5))
+            circle(d.axis.ax, ctx, p, 2; fillcolor = 0.5*Color(:white))
         end
     end
     qsave(d, "basic1.pdf")
@@ -105,14 +105,14 @@ function main3()
     width = 800
     height = 600
     margins = (80, 80, 80, 80)
-    windowbackgroundcolor = (1,1,1)
+    windowbackgroundcolor = Color(:white)
     as = AxisStyle()
     ax = pk.AxisMap(width, height, margins, box, false, true)
     function fn(ctx)
         rect(ctx, Point(0,0), Point(width, height); fillcolor =  windowbackgroundcolor)
         drawaxis(ctx, ax, ticks, box, as)
         setclipbox(ctx, ax, box)
-        line(ax, ctx, Point.(zip(x, y)); linestyle=LineStyle((0,0,1), 1))
+        line(ax, ctx, Point.(zip(x, y)); linestyle=LineStyle(Color(:blue), 1))
     end
     d = pk.Drawable(width, height)
     over(fn, d) 
@@ -140,7 +140,8 @@ end
 function main5()
     x = collect(0:0.01:10)
     pf(t) = pzip(x, sin.(x *(1+t)))
-    ff(t) = plot(pf(t); ymin =-2, ymax = 2, windowbackgroundcolor=(1-exp(-t),0.8,0.8))
+    ff(t) = plot(pf(t); ymin =-2, ymax = 2,
+                 windowbackgroundcolor = Color(1-exp(-t),0.8,0.8))
     anim = Anim(ff)
     anim.tmax = 5
     qsee(anim)
@@ -151,7 +152,7 @@ function main6()
     x = collect(0:0.01:10)
     pf(t) = pzip(x, sin.(x *(1+t)))
     ff(t) = plot(pf(t); ymin =-2, ymax = 2,
-                     windowbackgroundcolor=(1-exp(-t),0.8,0.8))
+                     windowbackgroundcolor=Color(1-exp(-t),0.8,0.8))
     anim = Anim(ff)
     qsave(frame(anim, 1.2), "basic6.png")
     anim.tmax = 1
@@ -164,7 +165,7 @@ function main7()
     x = collect(0:0.01:10)
     p1(t) = pzip(x, sin.(x *(1+t)))
     f1(t) = plot(p1(t); ymin =-2, ymax = 2,
-                     windowbackgroundcolor=(1-exp(-t),0.8,0.8))
+                     windowbackgroundcolor=Color(1-exp(-t),0.8,0.8))
     p2(t) = pzip(x, exp(-t)*sin.(x *(1+t)))
     f2(t) = plot(p2(t); ymin =-2, ymax = 2)
 
@@ -178,7 +179,7 @@ end
 function main8()
     links = [[1, 2], [1, 4], [2, 3], [2, 5], [3, 6], [4, 5], [5, 6]]
     x = Point[(0, 0), (1, 0), (2, 0), (0, 1), (1, 1), (2, 1)]
-    f = drawgraph(links, x; graph_nodes = Node(;fillcolor=(1,0,0)))
+    f = drawgraph(links, x; graph_nodes = Node(;fillcolor=Color(:red)))
     qsave(f, "basic8.pdf")
 end
 
@@ -189,9 +190,9 @@ function main9()
     d = plot(x,y)
     over(d; clip=false) do ctx
         line(d.axis.ax, ctx, Point(0, 0), Point(1, 1);
-             linestyle = LineStyle( (0, 0, 0), 2))
+             linestyle = LineStyle( Color(:black), 2))
         line(ctx, Point(0, 0), Point(400, 300);
-             linestyle = LineStyle( (0, 0, 1), 2))
+             linestyle = LineStyle( Color(:blue), 2))
     end
     qsave(d, "basic9.pdf")
 end
@@ -216,7 +217,9 @@ function main12()
     x = -0.3:0.1:1.3
     y = x.*x
     data = pzip(x,y)
-    markerfn = (ax, ctx, p, args...) -> circle(ax, ctx, p, 10; linestyle=LineStyle((1,0,0),2),fillcolor = (0,1,1))
+    markerfn = (ax, ctx, p, args...) -> circle(ax, ctx, p, 10;
+                                               linestyle=LineStyle(Color(:red),2),
+                                               fillcolor = Color(:cyan))
     d = plot(data; ymin=-0.2, markerfn)
     qsee(d; tmax = 1)
 end
@@ -227,9 +230,9 @@ function main13()
     axis = Axis(p)
     d = Drawable(axis)
     over(d) do ctx
-        line(d.axis.ax, ctx, p; linestyle=LineStyle((0,0,0),1))
+        line(d.axis.ax, ctx, p; linestyle=LineStyle(Color(:black),1))
         for x in p
-            circle(d.axis.ax, ctx, x, 3; fillcolor = (0.9,0.4,0.4))
+            circle(d.axis.ax, ctx, x, 3; fillcolor = Color(0.9,0.4,0.4))
         end
     end
     qsave(d, "basic13.pdf")
@@ -240,15 +243,16 @@ end
 # change the axis style
 function main14()
     data = Point[(x, x*x) for x in -0.1:0.01:1.85]
-    opts = getoptions(; axisstyle_edgelinestyle = LineStyle((0.5,0.5,0.5),2),
-                      axisstyle_gridlinestyle = LineStyle((0.5,0.5,0.7), 1),
-                      axisstyle_backgroundcolor = (1,1,1),
+    opts = getoptions(; axisstyle_edgelinestyle = LineStyle(0.5 * Color(:white), 2),
+                      axisstyle_gridlinestyle = LineStyle(Color(0.5,0.5,0.7), 1),
+                      axisstyle_backgroundcolor = Color(:white),
                       axisstyle_drawbox = true,
-                      windowbackgroundcolor = (0.9,0.9,0.9)
+                      windowbackgroundcolor = 0.9 * Color(:white)
                       )
     d = plot(data; opts...)
     over(d) do ctx
-        line(d.axis.ax, ctx, Point(1,1), Point(4, 3); linestyle = LineStyle((0,1,0),2))
+        line(d.axis.ax, ctx, Point(1,1), Point(4, 3);
+             linestyle = LineStyle(Color(:green),2))
     end
     qsave(d, "basic14.pdf")
 end
@@ -258,7 +262,8 @@ function main15()
     data = Point[(x, x*x) for x in -0.1:0.01:1.85]
     d = plot(data)
     over(d) do ctx
-        line(d.axis.ax, ctx, Point(1,1), Point(4, 3); linestyle = LineStyle((0,1,0),2))
+        line(d.axis.ax, ctx, Point(1,1), Point(4, 3);
+             linestyle = LineStyle(Color(:green), 2))
     end
     qsave(d, "basic15.pdf")
 end
@@ -267,9 +272,11 @@ end
 # draw using cairo
 function main16()
     d = Drawable(800, 600) do ctx
-        rect(ctx, Point(0,0), Point(800, 600); fillcolor = (1,0,0))
-        line(ctx, Point(10, 20), Point(800, 450); linestyle = LineStyle((0,0,1),5))
-        line(ctx, Point(10, 500), Point(600, 50); linestyle = LineStyle((0,1,0),5))
+        rect(ctx, Point(0,0), Point(800, 600); fillcolor = Color(:red))
+        line(ctx, Point(10, 20), Point(800, 450);
+             linestyle = LineStyle(Color(:blue), 5))
+        line(ctx, Point(10, 500), Point(600, 50);
+             linestyle = LineStyle(Color(:green), 5))
     end
     qsave(d, "basic16.png")
 end
@@ -299,15 +306,18 @@ end
 function main19()
     d = Drawable(Axis(; xmin = -10, xmax = 20, ymin=-20, ymax=20))
     over(d) do ctx
-        circle(d.axis.ax, ctx, Point(0,0), 50; linestyle=LineStyle((0,0,0),4))
+        circle(d.axis.ax, ctx, Point(0,0), 50;
+               linestyle = LineStyle(Color(:black), 4))
     end
     qsave(d, "basic19.pdf")
 end
 
 function main20()
     d= Drawable(800, 600) do ctx
-        rect(ctx, Point(300,20), Point(200, 100); fillcolor = (1,0.8,0.8))
-        text(ctx, Point(300,120), 50, (0,0,0), "Hellogello"; horizontal = "left", vertical="bottom")
+        rect(ctx, Point(300,20), Point(200, 100);
+             fillcolor = Color(1,0.8,0.8))
+        text(ctx, Point(300,120), 50, Color(:black),
+             "Hellogello"; horizontal = "left", vertical="bottom")
     end
     qsave(d, "basic20.pdf")
 end
@@ -377,13 +387,13 @@ end
 # beziers
 function main26()
     d = Drawable(800, 600) do ctx
-        rect(ctx, Point(0,0), Point(800, 600); fillcolor = (1,1,1))
+        rect(ctx, Point(0,0), Point(800, 600); fillcolor = Color(:white))
         bps = curve_from_endpoints(Point(100,100), Point(600,200), pi/6, pi/6, 0.3)
-        curve(ctx, bps...; linestyle = LineStyle((0,0,0), 2))
+        curve(ctx, bps...; linestyle = LineStyle( Color(:black), 2))
 
         for i=0:0.1:0.5
             p = bezier_point(i, bps...)
-            circle(ctx, p, 10;fillcolor = (1,0,0))
+            circle(ctx, p, 10;fillcolor = Color(:red))
         end
     end
     qsave(d, "basic26.pdf")
@@ -403,15 +413,15 @@ function main27()
 
         # bad choice, angles wrong in axis space
         bps = curve_from_endpoints(p, q, th1, th2, 0.3)
-        curve(d.axis.ax, ctx, bps...; linestyle = LineStyle((0,0,0), 4))
+        curve(d.axis.ax, ctx, bps...; linestyle = LineStyle( Color(:black), 4))
         a = bezier_point(0.3, bps...)
-        circle(d.axis.ax, ctx, a, 10;fillcolor = (1,0,0))
+        circle(d.axis.ax, ctx, a, 10;fillcolor = Color(:red))
 
         # good choice, angles correct in pixel space
         bps = curve_from_endpoints(ax(p), ax(q), th1, th2, 0.3)
-        curve(ctx, bps...; linestyle = LineStyle((0,1,1), 1))
+        curve(ctx, bps...; linestyle = LineStyle(Color(:cyan), 1))
         a = bezier_point(0.3, bps...)
-        circle(ctx, a, 5;fillcolor = (0,1,0))
+        circle(ctx, a, 5;fillcolor = Color(:green))
 
         bps1 = curve_from_endpoints(ax(p), ax(q), th1, th2, 0.3)
         #println.("cfe composed with ax = ", bps1)
@@ -434,7 +444,7 @@ function main28()
     d = plot(x, y1)
     over(d) do ctx
         plot(d.axis.ax, ctx, pzip(x, y2))
-        plot(d.axis.ax, ctx, pzip(x, y2.-1); linestyle=LineStyle((0,0,1),3))
+        plot(d.axis.ax, ctx, pzip(x, y2.-1); linestyle=LineStyle(Color(:blue),3))
     end
     qsave(d, "basic28.pdf")
 end
@@ -459,14 +469,14 @@ function main30()
     width = 800
     height = 600
     margins = (80, 80, 80, 80)
-    windowbackgroundcolor = (1,1,1)
+    windowbackgroundcolor = Color(:white)
     as = AxisStyle()
     ax = pk.AxisMap(width, height, margins, range, false, true)
     function fn(ctx)
         rect(ctx, Point(0,0), Point(width, height); fillcolor =  windowbackgroundcolor)
         drawaxis(ctx, ax, ticks, range, as)
         setclipbox(ctx, ax, range)
-        line(ax, ctx, Point.(zip(x, y)); linestyle=LineStyle((0,0,1), 1))
+        line(ax, ctx, Point.(zip(x, y)); linestyle=LineStyle(Color(:black), 1))
     end
     d = pk.Drawable(width, height)
     over(fn, d) 
@@ -480,11 +490,11 @@ function main31()
     n = length(x)
     m = length(links)
   
-    graph_nodes = [Node(; text=string(i), fillcolor=(0,0,0.6)) for i=1:n]
+    graph_nodes = [Node(; text=string(i), fillcolor = Color(0,0,0.6)) for i=1:n]
 
     arrows = ((0.8, TriangularArrow()),)
-    node(i) = (0.5, Node(; fillcolor = (1,1,1),
-                         textcolor = (0,0,0),
+    node(i) = (0.5, Node(; fillcolor = Color(:white),
+                         textcolor = Color(:black),
                          linestyle = nothing,
                          text=string(i)))
     
@@ -518,11 +528,11 @@ function main34()
     over(r) do ctx
         x = 1
         for i = 1:10
-            circle(r.axis.ax, ctx, Point(x, 5), 10; fillcolor = (0,1,0))
+            circle(r.axis.ax, ctx, Point(x, 5), 10; fillcolor = Color(:green))
             x += 1
         end
         for i = 1:10
-            circle(r.axis.ax, ctx, Point(i, 2), 10; fillcolor = (1,0,0))
+            circle(r.axis.ax, ctx, Point(i, 2), 10; fillcolor = Color(:red))
         end
     end
     qsave(r, "basic34.pdf")
@@ -534,13 +544,13 @@ function main35()
     x = 1
     for i = 1:10
         over(d) do ctx
-            circle(d.axis.ax, ctx, Point(x, 5), 10; fillcolor = (0,1,0))
+            circle(d.axis.ax, ctx, Point(x, 5), 10; fillcolor = Color(:green))
         end
         x += 1
     end
     for i = 1:10
         over(d) do ctx
-            circle(d.axis.ax, ctx, Point(i, 2), 10; fillcolor = (1,0,0))
+            circle(d.axis.ax, ctx, Point(i, 2), 10; fillcolor = Color(:red))
         end
     end
     qsave(d, "basic35.pdf")

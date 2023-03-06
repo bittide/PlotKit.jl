@@ -4,6 +4,7 @@ module CairoTools
 using LinearAlgebra
 using ..Cairo
 using ..Tools
+using ..Colors
 
 # structs
 export Point, LineStyle, Box
@@ -61,6 +62,12 @@ end
 
 # utils
 polar(r, theta) = Point(r*cos(theta), r*sin(theta))
+
+##############################################################################
+# colors
+
+
+
 
 ##############################################################################
 # boxes
@@ -134,191 +141,9 @@ mutable struct LineStyle
     width
 end
 
+#LineStyle(c::Tuple, w) = LineStyle(Color(c), w)
 
-##############################################################################
-# color functions
 
-"""
-    hexcol(c::UInt32)
-
-Return the color corresponding to a 6-digit hex number as 3 doubles.
-"""
-function hexcol(c::UInt32)
-    r = c >>16 & 0xff
-    g = c >>8 & 0xff
-    b = c  & 0xff
-    return (r/255, g/255, b/255)
-end
-
-"""
-    corput_sequence(n)
-
-Return the Van der Corput low-discrepancy sequence, a permutation of 0...2^n-1.
-"""
-function corput_sequence(n)
-    f(x) = parse(Int, reverse(string(x, base=2, pad=n)), base=2)
-    m = (1<<n)-1
-    return [f(x) for x=0:m]
-end
-
-"""
-    hsvtorgb(h,s,v)
-
-Convert h,s,v color to r,g,b
-"""
-function hsvtorgb(h,s,v)
-    cube_x=[ 1 1 0 0 0 1 1
-             0 1 1 1 0 0 0
-             0 0 0 1 1 1 0 ]
-    if (h==1)
-        h=0;
-    end
-    seg=Int(floor(h*6)+1)
-    extremals = hcat(cube_x[:,seg],cube_x[:,seg+1],[1;1;1])
-    l = zeros(3,1);
-    l[3] = 1-s
-    l[2] = (6 * h + 1 - seg)*(1 - l[3])
-    l[1] = 1 - l[2] - l[3]
-    y = extremals * l
-    y = y*v
-    return y
-end
-
-"""
-    rgbtohsv(r,g,b)
-
-Convert r,g,b to h,s,v color.
-"""
-function rgbtohsv(r,g,b)
-    x = [r, g, b]
-    val, i = max(x)
-    if (val==0)
-        return (0, 0, 0)
-    end
-    x = x / val
-    r = x[1]
-    g = x[2]
-    b = x[3]
-    # Now we have normalized by the infinity norm,
-    # so x is on the surface of a unit cube.
-    # x is on one of three faces of this cube, since x >= 0
-
-    # Projecting this cube onto the plane perpendicular
-    # to [1;1;1] results in a hexagon.
-
-    # Each of the three faces of the cube projects to two segments 
-    # of the hexagon.
-    cube_x=[ 1 1 0 0 0 1 1
-             0 1 1 1 0 0 0
-             0 0 0 1 1 1 0 ]
-
-    # segments 6 and 1 (i.e., the r=1 face)
-    if (i == 1)
-        if (g < b)
-            # segment 6
-            seg = 6
-        else
-            # segment 1
-            seg = 1
-        end
-    end
-
-    # segments 2 and 3 (i.e., the g=1 face)
-    if (i == 2)
-        if (b < r)
-            # segment 2
-            seg = 2
-        else
-            # segment 3
-            seg = 3
-        end
-    end
-    # segments 4 and 5 (i.e., the b=1 face)
-    if (i == 3)
-        if (r < g)
-            # segment 4
-            seg = 4
-        else
-            # segment 5
-            seg = 5
-        end
-    end
-
-    extremals = [ cube_x[:, seg], cube_x[:,seg+1], [1;1;1] ]
-
-    # now express x (which is on the interior of a segment)
-    # as a linear combination of the segment's extremal vectors
-    l = extremals\x
-
-    # and the saturation is 1 - the coefficient of (1,1,1)
-    sat = 1 - l[3]
-
-    # the hue parameterizes the distance around the boundary
-    # (similar to polar coordinates)
-    if l[1] + l[2] < 1e-10
-        # singular case
-        hue = 0
-    else
-        hue = (l[2] / (l[1] + l[2]) + seg - 1) / 6 
-    end
-    return (hue, sat, val)
-end
-
-"""
-    make_pseudo_random_hues()
-
-Return a pseudo-random list of colors, at fixed saturation and value.
-"""
-function make_pseudo_random_hues()
-    hues = corput_sequence(8)
-    cmap = [hsvtorgb(h/255, 0.9, 0.9) for h in hues]
-end
-
-"""
-    make_pseudo_random_colors()
-
-Return a pseudo-random list of colors.
-"""
-function make_pseudo_random_colors()
-    vals = [255, 128, 192,  160,  96,  224]
-    sathues = [255, 128,  64,  192,  32,  160,  96,  224]
-    cmap = [hsvtorgb(h/255, s/255, v/255) for v in vals for s in sathues for h in sathues]
-    return cmap
-end
-
-function css_colors()
-    tomato = hexcol(0xFF6347)
-    yellowgreen = hexcol(0x9ACD32)
-    steelblue = hexcol(0x4682B4)
-    gold = hexcol(0xDAA520)
-    darkred = hexcol(0x8b0000)
-    darkgreen = hexcol(0x006400)
-    midnightblue = hexcol(0x191970)
-    darkorange = hexcol(0xff8c00)
-    salmon = hexcol(0xfa8072)
-    lightgreen = hexcol(0x90ee90)
-    lightblue = hexcol(0xadd8e6)
-    moccasin = hexcol(0xFFE4B5)
-    return [tomato, yellowgreen, steelblue, gold,
-            darkred, darkgreen, midnightblue, darkorange,
-            salmon, lightgreen, lightblue, moccasin]
-end
-
-const default_colors =   vcat(css_colors(), make_pseudo_random_colors())
-
-"""
-    colormap(i)
-
-Return the i'th color in the default colormap
-"""
-colormap(i) = default_colors[i]
-
-"""
-    colormap(i,j)
-
-Return the i'th color in the default colormap, darkened by amount j.
-"""
-colormap(i,j) = 0.7 ^ (j-1) .* colormap(i)
 
 ##############################################################################
 # text functions
@@ -574,13 +399,10 @@ end
 
 Set the current Cairo source to be the color c.
 """
-function source(ctx::CairoContext, c)
-    if length(c) == 4
-        Cairo.set_source_rgba(ctx, c...)
-    else
-        Cairo.set_source_rgb(ctx, c...)
-    end
-end
+source(ctx::CairoContext, c::RGBColor) = Cairo.set_source_rgb(ctx, c.r, c.g, c.b)
+source(ctx::CairoContext, c::RGBAColor) = Cairo.set_source_rgba(ctx, c.r, c.g, c.b, c.a)
+
+
 
 """
     rectangle(ctx, p, wh)
@@ -810,7 +632,7 @@ abstract type Arrow end
 Base.@kwdef mutable struct TriangularArrow <: Arrow
     size = 10
     angle = pi/8
-    fillcolor = (0,0,0)
+    fillcolor = Color(:black)
     linestyle = nothing
 end
 
@@ -829,7 +651,7 @@ abstract type Path end
 Base.@kwdef mutable struct StraightPath <: Path
     arrows = ()
     nodes = ()
-    linestyle = LineStyle((0,0,0),1)
+    linestyle = LineStyle(Color(:black), 1)
 end
 
 # curved path between two points
@@ -841,16 +663,16 @@ Base.@kwdef mutable struct CurvedPath <: Path
     curveparam = 0.3
     arrows = ()
     nodes = ()
-    linestyle = LineStyle((0,0,0),1)
+    linestyle = LineStyle(Color(:black),1)
 end
 
 # curved path with four bezier points
 Base.@kwdef mutable struct BezierPath <: Path
     closed = false
-    fillcolor = (0,0,1)
+    fillcolor = Color(:blue)
     nodes = ()
     arrows = ()
-    linestyle = LineStyle((0,0,0),1)
+    linestyle = LineStyle(Color(:black),1)
 end
 
 Path(args...; kw...) = StraightPath(args...; kw...)
@@ -906,17 +728,17 @@ abstract type Node end
 Base.@kwdef mutable struct CircularNode <: Node
     text = ""
     fontsize = 8
-    textcolor = (1,1,1)
+    textcolor = Color(:white)
     fillcolor = colormap(3)
-    linestyle = LineStyle((0,0,0), 1)
+    linestyle = LineStyle(Color(:black), 1)
     radius = 9
 end
 
 Base.@kwdef mutable struct RectangularNode <: Node
     text = ""
     fontsize = 8
-    textcolor = (0,0,0)
-    fillcolor = (1,1,1)  # can be nothing
+    textcolor = Color(:black)
+    fillcolor = Color(:white)  # can be nothing
     linestyle = nothing  # can be nothing
 end
 
