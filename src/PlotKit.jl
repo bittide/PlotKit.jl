@@ -59,7 +59,7 @@ export Anim, frame, see, save_frames
 #------------------------------------------------------------------------------
 # rexport from Colors
 
-export Color, Color3, Color4
+export Color, RGBColor, RGBAColor
 
 
 #------------------------------------------------------------------------------

@@ -4,30 +4,30 @@ module Colors
 using LinearAlgebra
 using ..Tools
 
-export Color3, Color4, Color, colormap
+export RGBColor, RGBAColor, Color, colormap
 
 abstract type Color end
 
-struct Color3 <: Color
+struct RGBColor <: Color
     r::Float64
     g::Float64
     b::Float64
 end
 
-struct Color4 <: Color
+struct RGBAColor <: Color
     r::Float64
     g::Float64
     b::Float64
     a::Float64
 end
 
-eval(makevector(Color3))
-eval(makevector(Color4))
+eval(makevector(RGBColor))
+eval(makevector(RGBAColor))
 
-Color(r,g,b) = Color3(r,g,b)
-Color(r,g,b,a) = Color4(r,g,b,a)
-Color(x::Tuple{Any,Any,Any}) = Color3(x)
-Color(x::Tuple{Any,Any,Any,Any}) = Color4(x)
+Color(r,g,b) = RGBColor(r,g,b)
+Color(r,g,b,a) = RGBAColor(r,g,b,a)
+Color(x::Tuple{Any,Any,Any}) = RGBColor(x)
+Color(x::Tuple{Any,Any,Any,Any}) = RGBAColor(x)
 Color(x::Symbol) = color_names[x]
 
 ##############################################################################
@@ -42,7 +42,7 @@ function hexcol(c::UInt32)
     r = c >>16 & 0xff
     g = c >>8 & 0xff
     b = c  & 0xff
-    return Color3(r/255, g/255, b/255)
+    return RGBColor(r/255, g/255, b/255)
 end
 
 """
@@ -76,7 +76,7 @@ function Color_from_hsv(h,s,v)
     l[1] = 1 - l[2] - l[3]
     y = extremals * l
     y = y*v
-    return Color3(y[1], y[2], y[3])
+    return RGBColor(y[1], y[2], y[3])
 end
 
 """
@@ -84,7 +84,7 @@ end
 
 Convert r,g,b to h,s,v color.
 """
-function hsv(c::Color3)
+function hsv(c::RGBColor)
     x = [c.r, c.g, c.b]
     val, i = max(x)
     if (val==0)

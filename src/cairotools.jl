@@ -399,8 +399,8 @@ end
 
 Set the current Cairo source to be the color c.
 """
-source(ctx::CairoContext, c::Color3) = Cairo.set_source_rgb(ctx, c.r, c.g, c.b)
-source(ctx::CairoContext, c::Color4) = Cairo.set_source_rgba(ctx, c.r, c.g, c.b, c.a)
+source(ctx::CairoContext, c::RGBColor) = Cairo.set_source_rgb(ctx, c.r, c.g, c.b)
+source(ctx::CairoContext, c::RGBAColor) = Cairo.set_source_rgba(ctx, c.r, c.g, c.b, c.a)
 
 
 
