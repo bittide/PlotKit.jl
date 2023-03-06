@@ -30,47 +30,52 @@ CairoTools.draw(cw::CairoWindow) = CairoGL.draw(cw)
 # exports 
 
 # basic.jl
-export @plotfns, DataIndices, getbox, setoptions!, expand_box, overdata
+export @plotfns, DataIndices, expand_box, getbox, ifnotmissing, overdata, setoptions!
 
 # axis.jl
 export AxisMap, Ticks, best_labels, best_ticks, get_tick_extents
 
 # axisbuilder.jl
-export AxisStyle, AxisOptions, Layout, Axis, fit_box_around_data, set_window_size_from_data
+export Axis, AxisOptions, AxisStyle, Layout, fit_box_around_data, set_window_size_from_data
 
 # drawaxis.jl
 export drawaxis, setclipbox
 
 # graphs.jl
-export Graph, drawgraph, shaded_graph, draw_digraph
+export Graph, draw_digraph, drawgraph, shaded_graph
 
 # recorder.jl
-export Drawable, Recorder, paint, save, over
+export Drawable, Recorder, over, paint, save
 
 # lineplots.jl
 export drawplot
 
 # layout.jl
-export hbox, vbox, hvbox, stack, offset
+export hbox, hvbox, offset, stack, vbox
 
 # animator.jl
-export Anim, frame, see, save_frames
+export Anim, frame, save_frames, see
     
 #------------------------------------------------------------------------------
-# rexport from Colors
+# reexport from Colors
 
-export Color, RGBColor, RGBAColor
+export Color, RGBAColor, RGBColor, hadamard, hadamarddiv
+
+# ---------------------------------------------------------------------------
+# reexport from Tools
+
+export interp, makevector, normalize
 
 
 #------------------------------------------------------------------------------
 # reexport from cairotools
 
 # structs
-export Point, LineStyle, Box, Box2
+export Box, Box2, LineStyle, Point
 
 # just data funs
-export norm, interp, star, triangle, oblong, curve_to_bezier, bezier_point,
-    bezier2, curve_from_endpoints, split_bezier
+export bezier2, bezier_point, curve_from_endpoints, curve_to_bezier, norm,
+    oblong, split_bezier, star, triangle
 
 # colors
 # TODO separate package
@@ -79,29 +84,28 @@ export norm, interp, star, triangle, oblong, curve_to_bezier, bezier_point,
 #    darkgblue, darkgred, darkgyellow, darkggreen
 
 # color funs
-export hexcol, alphacol, cols, colormap, make_gradient
+export alphacol, colormap, cols, hexcol, make_gradient
 
 # text funs
-export text, get_text_info
+export get_text_info, text
 
 # surface funs
-export  makepdfsurface, makepngsurface, makesurface,
-    closepdfsurface, closepngsurface, closesurface
+export  closepdfsurface, closepngsurface, closesurface,
+    makepdfsurface, makepngsurface, makesurface
 
 # core cairo wrappers
-export source, set_linestyle
+export set_linestyle, source
 
 # elementary drawing
-export rect, polyline, line, circle, curve, move_to, line_to, stroke
+export circle, curve, line, line_to, move_to, polyline, rect, stroke
 
 # convenience drawing
-export draw, polygon, curve_between
-export Node, CircularNode, RectangularNode
-export StraightPath, CurvedPath, BezierPath, Path
-export TriangularArrow, Arrow 
+export Arrow, BezierPath, CircularNode, CurvedPath, Node,
+    Path,  RectangularNode, StraightPath, TriangularArrow,
+    curve_between, draw, polygon 
 
 # images
-export Pik, cairo_memory_surface_ctx, drawimage
+export Pik, cairo_memory_surface_ctx, drawimage, drawimage_to_mask
 
 # boxes
 export expand_box, inbox
