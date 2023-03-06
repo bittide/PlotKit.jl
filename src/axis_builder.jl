@@ -31,7 +31,7 @@ end
 #
 #   ticks, box, yoriginatbottom
 #
-# and the AxisStyle object as. Note that the AxisStyle object
+# and the AxisStyle object "as". Note that the AxisStyle object
 # is provided by the user, and unchanged, but the ticks, and box
 # are computed by the Axis constructor.
 #
