@@ -6,6 +6,9 @@ using ..Cairo
 using ..Tools
 using ..Colors
 
+
+
+
 # structs
 export Point, LineStyle, Box
 
@@ -41,7 +44,7 @@ export StraightPath, CurvedPath, BezierPath, Path
 export TriangularArrow, Arrow 
 
 # images
-export Pik, cairo_memory_surface_ctx, drawimage
+export Pik, cairo_memory_surface_ctx, drawimage, drawimage_to_mask
 
 # boxes
 export expand_box, inbox
@@ -507,7 +510,8 @@ end
 
 Fill and/or stroke the current Cairo path.
 """
-function draw(ctx::CairoContext; closed = false, linestyle = nothing, fillcolor = nothing)
+function draw(ctx::CairoContext; closed = false, linestyle = nothing,
+              fillcolor = nothing, keep = false)
     if closed
         Cairo.close_path(ctx)
     end
@@ -523,7 +527,7 @@ function draw(ctx::CairoContext; closed = false, linestyle = nothing, fillcolor 
         stroke(ctx, linestyle)
         return
     end
-    if isnothing(fillcolor) && isnothing(linestyle)
+    if isnothing(fillcolor) && isnothing(linestyle) && !keep
         Cairo.new_path(ctx)
     end
 end
@@ -587,12 +591,13 @@ end
 Draw a line joining the points in the list of points x.
 """
 function line(ctx::CairoContext, p::Array{Point};
-              closed = false, linestyle = nothing, fillcolor = nothing)
+              closed = false, linestyle = nothing, fillcolor = nothing,
+              keep = false)
     Cairo.move_to(ctx, p[1])
     for i=2:length(p)
         Cairo.line_to(ctx, p[i])
     end
-    draw(ctx; closed, linestyle, fillcolor)
+    draw(ctx; closed, linestyle, fillcolor, keep)
 end
 
 
@@ -924,6 +929,18 @@ drawimage(ctx, pik::Pik, b::Box) = drawimage(ctx, pik, Point(b.xmin, b.ymin);
                                              width = b.xmax - b.xmin,
                                              height = b.ymax - b.ymin)
 
+function drawimage_to_mask(ctx, pik::Pik, pts, sx, sy; format = Cairo.FORMAT_ARGB32,
+                           operator = Cairo.OPERATOR_OVER)
+
+    surface = Cairo.CairoSurface(pik; format)
+    line(ctx, pts; closed=true, keep=true)
+    Cairo.save(ctx)
+    Cairo.scale(ctx, 1/sx, 1/sy)
+    Cairo.set_source_surface(ctx, surface, 0, 0)
+    Cairo.set_operator(ctx, operator)
+    Cairo.fill(ctx)
+    Cairo.restore(ctx)
+end
 
 
 function drawimage_x(ctx, pik::Pik, x, y, width, height; centered = centered)

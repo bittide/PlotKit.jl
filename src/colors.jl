@@ -4,7 +4,7 @@ module Colors
 using LinearAlgebra
 using ..Tools
 
-export RGBColor, RGBAColor, Color, colormap
+export RGBColor, RGBAColor, Color, colormap, interp, hadamard
 
 abstract type Color end
 
@@ -29,6 +29,7 @@ Color(r,g,b,a) = RGBAColor(r,g,b,a)
 Color(x::Tuple{Any,Any,Any}) = RGBColor(x)
 Color(x::Tuple{Any,Any,Any,Any}) = RGBAColor(x)
 Color(x::Symbol) = color_names[x]
+
 
 ##############################################################################
 # color functions

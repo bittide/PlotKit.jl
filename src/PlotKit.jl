@@ -30,7 +30,7 @@ CairoTools.draw(cw::CairoWindow) = CairoGL.draw(cw)
 # exports 
 
 # basic.jl
-export @plotfns, DataIndices, getbox, setoptions!, expand_box, overdata
+export @plotfns, DataIndices, getbox, setoptions!, expand_box, overdata, ifnotmissing
 
 # axis.jl
 export AxisMap, Ticks, best_labels, best_ticks, get_tick_extents
@@ -57,9 +57,14 @@ export hbox, vbox, hvbox, stack, offset
 export Anim, frame, see, save_frames
     
 #------------------------------------------------------------------------------
-# rexport from Colors
+# reexport from Colors
 
-export Color, RGBColor, RGBAColor
+export Color, RGBColor, RGBAColor, hadamard, hadamarddiv
+
+# ---------------------------------------------------------------------------
+# reexport from Tools
+
+export makevector, interp, normalize
 
 
 #------------------------------------------------------------------------------
@@ -69,7 +74,7 @@ export Color, RGBColor, RGBAColor
 export Point, LineStyle, Box, Box2
 
 # just data funs
-export norm, interp, star, triangle, oblong, curve_to_bezier, bezier_point,
+export norm, star, triangle, oblong, curve_to_bezier, bezier_point,
     bezier2, curve_from_endpoints, split_bezier
 
 # colors
@@ -101,7 +106,7 @@ export StraightPath, CurvedPath, BezierPath, Path
 export TriangularArrow, Arrow 
 
 # images
-export Pik, cairo_memory_surface_ctx, drawimage
+export Pik, cairo_memory_surface_ctx, drawimage, drawimage_to_mask
 
 # boxes
 export expand_box, inbox
