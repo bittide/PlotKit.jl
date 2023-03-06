@@ -59,7 +59,7 @@ export Anim, frame, see, save_frames
 #------------------------------------------------------------------------------
 # reexport from Colors
 
-export Color, Color3, Color4, hadamard, hadamarddiv
+export Color, RGBColor, RGBAColor, hadamard, hadamarddiv
 
 # ---------------------------------------------------------------------------
 # reexport from Tools
