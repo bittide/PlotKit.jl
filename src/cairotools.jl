@@ -650,13 +650,18 @@ Arrow(args...; kw...) = TriangularArrow(args...; kw...)
 
 ##############################################################################
 # paths
+
+# TODO: this should all be higher level
+# and contain coordinates
 abstract type Path end
 
 # straight path between two points
+# TODO: should have "closed" attribute
 Base.@kwdef mutable struct StraightPath <: Path
     arrows = ()
     nodes = ()
     linestyle = LineStyle(Color(:black), 1)
+    points = nothing
 end
 
 # curved path between two points
@@ -737,6 +742,7 @@ Base.@kwdef mutable struct CircularNode <: Node
     fillcolor = colormap(3)
     linestyle = LineStyle(Color(:black), 1)
     radius = 9
+    center = nothing
 end
 
 Base.@kwdef mutable struct RectangularNode <: Node
@@ -745,29 +751,37 @@ Base.@kwdef mutable struct RectangularNode <: Node
     textcolor = Color(:black)
     fillcolor = Color(:white)  # can be nothing
     linestyle = nothing  # can be nothing
+    center = nothing
+    widthheight = nothing
 end
 
 
 Node(args...; kw...) = CircularNode(args...; kw...)
 
-   
-function draw(ctx, p::Point, node::CircularNode)
+function draw(ctx::CairoContext, p::Point, node::CircularNode)
     circle(ctx, p, node.radius;
            linestyle = node.linestyle, fillcolor = node.fillcolor)
     text(ctx, p, node.fontsize, node.textcolor, node.text;
          horizontal = "center", vertical = "center")
 end
 
-function draw(ctx, p, node::RectangularNode)
+function draw(ctx::CairoContext, p, node::RectangularNode)
     left, top, txtwidth, txtheight = get_text_info(ctx, node.fontsize, node.text)
-    T = [txtwidth+6 0 ; 0 txtheight+6] 
+    if isnothing(node.widthheight)
+        w = txtwidth + 6
+        h = txtheight + 6
+    else
+        w = node.widthheight.x
+        h = node.widthheight.y
+    end
+    T = [w 0 ; 0 h]
     box = [T*a for a in Point[(1,0), (1,1), (0,1), (0,0)]]
     polygon(ctx, p, 0, 1, box; center = true, node.linestyle, node.fillcolor)
     text(ctx, p, node.fontsize, node.textcolor, node.text;
          horizontal = "center", vertical = "center")
 end
 
-    
+draw(ctx::CairoContext, node::Node) = draw(ctx, node.center, node)
 
 
 # ##############################################################################
