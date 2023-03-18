@@ -72,9 +72,14 @@ end
 CairoTools.draw(ax::AxisMap, ctx, obj::RectangularNode) = CairoTools.draw(ax, ctx, obj.center, obj)
 
 function CairoTools.draw(ax::AxisMap, ctx::CairoContext, p::Point, node::CircularNode)
-    circle(ax, ctx, p, ax.fx(node.radius) - ax.fx(0);
+    if node.unscaled
+        r = node.radius
+    else
+        r = ax.fx(node.radius) - ax.fx(0)
+    end
+    circle(ax, ctx, p, r;
            linestyle = node.linestyle, fillcolor = node.fillcolor)
-    text(ctx, p, node.fontsize, node.textcolor, node.text;
+    text(ax, ctx, p, node.fontsize, node.textcolor, node.text;
          horizontal = "center", vertical = "center")
 end
 

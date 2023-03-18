@@ -743,6 +743,7 @@ Base.@kwdef mutable struct CircularNode <: Node
     linestyle = LineStyle(Color(:black), 1)
     radius = 9
     center = nothing
+    unscaled = true
 end
 
 Base.@kwdef mutable struct RectangularNode <: Node
