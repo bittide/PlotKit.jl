@@ -70,7 +70,9 @@ Base.@kwdef mutable struct AxisOptions
     ymin = -Inf
     ymax = Inf
     xdatamargin = 0
-    ydatamargin = 0 
+    ydatamargin = 0
+    xwidenfactor = 1
+    ywidenfactor = 1
     widthfromdata = 0 
     heightfromdata = 0
     width = 800
@@ -131,7 +133,9 @@ function Axis(p, ao::AxisOptions)
     # then the data is used to determine limits on y
     # and these limits go into tickbox
     boxtmp = fit_box_around_data(p, ignore_data_outside_this_box)
-    tickbox = ifnotmissing(ao.tickbox, expand_box(boxtmp, ao.xdatamargin, ao.ydatamargin))
+    tickbox = ifnotmissing(ao.tickbox,
+                           scale_box(expand_box(boxtmp, ao.xdatamargin, ao.ydatamargin),
+                                     ao.xwidenfactor, ao.ywidenfactor))
 
     # tickbox used to define the minimum area which the ticks
     # are guaranteed to contain
@@ -164,6 +168,7 @@ Axis(ao::AxisOptions) = Axis(missing, ao)
 function parse_axis_options(; kw...)
     ao = AxisOptions()
     setoptions!(ao, "", kw...)
+    setoptions!(ao, "axisoptions_", kw...)
     setoptions!(ao.tickbox, "tickbox_", kw...)
     setoptions!(ao.axisbox, "axisbox_", kw...)
     setoptions!(ao.ticks, "ticks_", kw...)

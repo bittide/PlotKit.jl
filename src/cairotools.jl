@@ -47,7 +47,7 @@ export TriangularArrow, Arrow
 export Pik, cairo_memory_surface_ctx, drawimage, drawimage_to_mask
 
 # boxes
-export expand_box, inbox
+export expand_box, scale_box, inbox
 
 ##############################################################################
 # points
@@ -101,6 +101,14 @@ Base.copy(a::Box) =  Box(a.xmin, a.xmax, a.ymin, a.ymax)
 
 function expand_box(b::Box, dx, dy)
     return Box(b.xmin - dx, b.xmax + dx, b.ymin - dy, b.ymax + dy)
+end
+
+function scale_box(b::Box, rx, ry)
+    width = b.xmax - b.xmin
+    height = b.ymax - b.ymin
+    cx = (b.xmax + b.xmin) / 2
+    cy = (b.ymax + b.ymin) / 2
+    return Box(cx - rx*width/2, cx + rx*width/2, cy - ry*height/2, cy + ry*height/2)
 end
 
 inbox(p::Point, b::Box) = (b.xmin <= p.x <= b.xmax) && (b.ymin <= p.y <= b.ymax)
@@ -943,7 +951,7 @@ function drawimage_to_mask(ctx, pik::Pik, pts, sx, sy; format = Cairo.FORMAT_ARG
 end
 
 
-function drawimage_x(ctx, pik::Pik, x, y, width, height; centered = centered)
+function drawimage_x(ctx, pik::Pik, x, y, width, height; centered = centered, nearest = false)
     if centered
         x = x - width / 2
         y = y - height / 2
@@ -954,6 +962,9 @@ function drawimage_x(ctx, pik::Pik, x, y, width, height; centered = centered)
     Cairo.save(ctx)
     Cairo.scale(ctx, 1/sx, 1/sy)
     Cairo.set_source_surface(ctx, surface, sx*x, sy*y)
+    if nearest
+        Cairo.pattern_set_filter(Cairo.get_source(ctx), Cairo.FILTER_NEAREST)
+    end
     Cairo.scale(ctx, sx, sy)
     Cairo.rectangle(ctx, x, y, width, height)
     Cairo.fill(ctx)
