@@ -680,7 +680,7 @@ function drawimage_to_mask(ctx, pik::Pik, pts, sx, sy; format = Cairo.FORMAT_ARG
 end
 
 
-function drawimage_x(ctx, pik::Pik, x, y, width, height; centered = centered)
+function drawimage_x(ctx, pik::Pik, x, y, width, height; centered = centered, nearest = false)
     if centered
         x = x - width / 2
         y = y - height / 2
@@ -691,7 +691,9 @@ function drawimage_x(ctx, pik::Pik, x, y, width, height; centered = centered)
     Cairo.save(ctx)
     Cairo.scale(ctx, 1/sx, 1/sy)
     Cairo.set_source_surface(ctx, surface, sx*x, sy*y)
-    Cairo.pattern_set_filter(Cairo.get_source(ctx), Cairo.FILTER_NEAREST)
+    if nearest
+        Cairo.pattern_set_filter(Cairo.get_source(ctx), Cairo.FILTER_NEAREST)
+    end
     Cairo.scale(ctx, sx, sy)
     Cairo.rectangle(ctx, x, y, width, height)
     Cairo.fill(ctx)
