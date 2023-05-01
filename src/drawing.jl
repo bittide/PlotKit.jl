@@ -10,11 +10,10 @@ function setclipbox(ctx::CairoContext, ax::AxisMap, box)
 end
 
 
-
 ##############################################################################
 # from tools
 
-
+# TODO: circle radius shouldbe in axis coords too? What about non-uniform x,y scaling
 
 # does this:
 #
@@ -44,12 +43,9 @@ for f in (:curve,)
     end
 end
 
-# some similar functions (distinguished by type dispatch not number of args)
-CairoTools.draw(ax::AxisMap, ctx, p, obj::Node) = CairoTools.draw(ctx, ax(p), obj)
-CairoTools.draw(ax::AxisMap, ctx, p, q, obj::Path) = CairoTools.draw(ctx, ax(p), ax(q), obj)
-
 
 ##############################################################################
+# higher level drawing
 
 
 function CairoTools.drawimage(ax::AxisMap, ctx, pik::Pik, b::Box)
