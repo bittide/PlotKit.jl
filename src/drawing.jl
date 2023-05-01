@@ -51,3 +51,12 @@ CairoTools.draw(ax::AxisMap, ctx, p, q, obj::Path) = CairoTools.draw(ctx, ax(p),
 
 ##############################################################################
 
+
+function CairoTools.drawimage(ax::AxisMap, ctx, pik::Pik, b::Box)
+    x1 = ax.fx(b.xmin)
+    x2 = ax.fx(b.xmax)
+    y1 = ax.fy(b.ymin)
+    y2 = ax.fy(b.ymax)
+    b2 = Box(min(x1, x2), max(x1, x2), min(y1, y2), max(y1,y2))
+    drawimage(ctx, pik, b2)
+end

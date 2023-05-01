@@ -30,7 +30,7 @@ CairoTools.draw(cw::CairoWindow) = CairoGL.draw(cw)
 # exports 
 
 # basic.jl
-export @plotfns, DataIndices, expand_box, getbox, ifnotmissing, overdata, setoptions!
+export @plotfns, DataIndices, expand_box, scale_box, getbox, ifnotmissing, overdata, setoptions!
 
 # axis.jl
 export AxisMap, Ticks, best_labels, best_ticks, get_tick_extents
