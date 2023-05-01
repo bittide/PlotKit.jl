@@ -4,7 +4,7 @@ module Colors
 using LinearAlgebra
 using ..Tools
 
-export RGBColor, RGBAColor, Color, colormap, interp, hadamard
+export RGBColor, RGBAColor, Color, colormap, interp, hadamard, hexcol
 
 abstract type Color end
 

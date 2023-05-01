@@ -22,7 +22,7 @@ export gblue, gred, ggreen, gyellow,
     darkgblue, darkgred, darkgyellow, darkggreen
 
 # color funs
-export hexcol, colormap, hsv, make_gradient
+export make_gradient
 
 # text funs
 export text, get_text_info
