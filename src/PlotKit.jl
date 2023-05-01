@@ -1,6 +1,7 @@
 module PlotKit
 
 using Cairo
+using LinearAlgebra
 
 include("tools.jl")
 using .Tools
@@ -100,9 +101,7 @@ export set_linestyle, source
 export circle, curve, line, line_to, move_to, polyline, rect, stroke
 
 # convenience drawing
-export Arrow, BezierPath, CircularNode, CurvedPath, Node,
-    Path,  RectangularNode, StraightPath, TriangularArrow,
-    curve_between, draw, polygon 
+export curve_between, draw, polygon 
 
 # images
 export Pik, cairo_memory_surface_ctx, drawimage, drawimage_to_mask
@@ -115,6 +114,11 @@ export expand_box, inbox
 # reexport from graphlayout
 export graphlayout, meshlayout
 
+
+#----------------------------------------------------------
+# reexport from diagrams
+export Arrow, BezierPath, CircularNode, CurvedPath, Node, Path
+export RectangularNode, StraightPath, TriangularArrow
 
 
 ################################################################
@@ -129,17 +133,16 @@ include("basic.jl")
 include("axis.jl")
 include("axis_builder.jl")
 include("draw_axis.jl")
-
 include("graphs.jl")
 include("drawing.jl")
 include("recorder.jl")
-
 include("lineplots.jl")
-
 include("layout.jl")
-
 include("animator.jl")
 
+
+
+include("diagrams.jl")
 
 
 

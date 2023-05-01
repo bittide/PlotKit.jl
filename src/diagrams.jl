@@ -1,12 +1,11 @@
+
 # Draw nodes, paths, and arrows
 
 
-# export Node, CircularNode, RectangularNode
-# export StraightPath, CurvedPath, BezierPath, Path
-# export TriangularArrow, Arrow 
+##############################################################################
+# local utils
 
-
-
+polar(r, theta) = Point(r*cos(theta), r*sin(theta))
 
 
 ##############################################################################
@@ -47,7 +46,7 @@ end
 Path(args...; kw...) = StraightPath(args...; kw...)
 
 
-function draw(ctx, p1, p2, path::StraightPath)
+function CairoTools.draw(ctx, p1, p2, path::StraightPath)
     line(ctx, p1, p2; linestyle = path.linestyle)
     for (alpha, node) in path.nodes
         x = interp(p1, p2, alpha)
@@ -60,7 +59,7 @@ function draw(ctx, p1, p2, path::StraightPath)
     end
 end
 
-function draw(ctx, p1, p2, path::CurvedPath)
+function CairoTools.draw(ctx, p1, p2, path::CurvedPath)
     bezier_points = curve_from_endpoints(p1, p2, path.theta1, path.theta2, path.curveparam)
     curve(ctx, bezier_points...;
           closed = path.closed, linestyle = path.linestyle,
@@ -75,7 +74,7 @@ function draw(ctx, p1, p2, path::CurvedPath)
     end
 end
 
-function draw(ctx, p0, p1, p2, p3, path::BezierPath)
+function CairoTools.draw(ctx, p0, p1, p2, p3, path::BezierPath)
     curve(ctx, p0, p1, p2, p3;
           closed = path.closed, linestyle = path.linestyle,
           fillcolor = path.fillcolor)
@@ -121,14 +120,14 @@ end
 
 Node(args...; kw...) = CircularNode(args...; kw...)
 
-function draw(ctx::CairoContext, p::Point, node::CircularNode)
+function CairoTools.draw(ctx::CairoContext, p::Point, node::CircularNode)
     circle(ctx, p, node.radius;
            linestyle = node.linestyle, fillcolor = node.fillcolor)
     text(ctx, p, node.fontsize, node.textcolor, node.text;
          horizontal = "center", vertical = "center")
 end
 
-function draw(ctx::CairoContext, p, node::RectangularNode)
+function CairoTools.draw(ctx::CairoContext, p, node::RectangularNode)
     left, top, txtwidth, txtheight = get_text_info(ctx, node.fontsize, node.text)
     if isnothing(node.widthheight)
         w = txtwidth + 6
@@ -146,7 +145,7 @@ end
 
 
 
-draw(ctx::CairoContext, node::Node) = draw(ctx, node.center, node)
+CairoTools.draw(ctx::CairoContext, node::Node) = draw(ctx, node.center, node)
 
 ##############################################################################
 # arrows
@@ -160,7 +159,7 @@ Base.@kwdef mutable struct TriangularArrow <: Arrow
     linestyle = nothing
 end
 
-function draw(ctx, x, dir, arrow::TriangularArrow)
+function CairoTools.draw(ctx, x, dir, arrow::TriangularArrow)
     theta = atan(dir.y, dir.x)
     polygon(ctx, x, theta, arrow.size, triangle(arrow.angle); fillcolor = arrow.fillcolor)
 end
@@ -316,3 +315,4 @@ end
 CairoTools.draw(ax::AxisMap, ctx, p, q, obj::Path) = CairoTools.draw(ctx, ax(p), ax(q), obj)
 
 ##############################################################################
+

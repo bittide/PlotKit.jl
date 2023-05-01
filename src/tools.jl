@@ -5,7 +5,6 @@ using LinearAlgebra
 
 export makevector, interp
 
-LinearAlgebra.norm(p) = sqrt(dot(p,p))
 
 interp(x, y, theta) = (1-theta)*x + theta*y
 
@@ -55,6 +54,7 @@ function makevector(T::DataType)
           hadamard(p::$tname, q::$tname) =  $(Expr(:call, tname, [:(p.$fld * q.$fld) for fld in fnames]...))
           hadamarddiv(p::$tname, q::$tname) =  $(Expr(:call, tname, [:(p.$fld / q.$fld) for fld in fnames]...))
           LinearAlgebra.normalize(x::$tname) = x/norm(x)
+          LinearAlgebra.norm(p::$tname) = sqrt(dot(p,p))
 
           # LinearAlgebra.norm(p::$tname) = sqrt($(Expr(:call, :+, [:(p.$fld * p.$fld) for fld in fnames]...)))
          end)
