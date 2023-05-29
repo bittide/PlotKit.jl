@@ -64,76 +64,79 @@ function main()
     end
 end
     
-# just the basic plot
-function main1()
-    x = -0.1:0.1:2.85
-    y = x.*x
-    data = pzip(x,y)
-    d = plot(data)
-    over(d) do ctx
-        for p in data
-            circle(d.axis.ax, ctx, p, 2; fillcolor = 0.5*Color(:white))
-        end
-    end
-    qsave(d, "basic1.pdf")
-end
+# # just the basic plot
+# # now in axisbuilder
+# function main1()
+#     x = -0.1:0.1:2.85
+#     y = x.*x
+#     data = pzip(x,y)
+#     d = plot(data)
+#     over(d) do ctx
+#         for p in data
+#             circle(d.axis.ax, ctx, p, 2; fillcolor = 0.5*Color(:white))
+#         end
+#     end
+#     qsave(d, "basic1.pdf")
+# end
 
 
-# basic two plots
-function main2()
-    x1 = -0.1:0.1:1.8
-    y1 = x1.*x1
-    x2 = -0.2:0.05:1.4
-    y2 = x2.*(x2 .- 0.6) .* (x2 .- 1)
-    fig = plot( [pzip(x1, y1), pzip(x2, y2)] )
-    qsave(fig, "basic2.pdf")
-end
+# 
+# # basic two plots on the same graph
+# # now in axisbuilder
+# function main2()
+#     x1 = -0.1:0.1:1.8
+#     y1 = x1.*x1
+#     x2 = -0.2:0.05:1.4
+#     y2 = x2.*(x2 .- 0.6) .* (x2 .- 1)
+#     fig = plot( [pzip(x1, y1), pzip(x2, y2)] )
+#     qsave(fig, "basic2.pdf")
+# end
 
 
-# doing it yourself
-function main3()
-    x = 0:0.1:10
-    y = x.*x/10
-
-    xt = best_ticks(minimum(x), maximum(x), 10)
-    yt = best_ticks(minimum(y), maximum(y), 10)
-    xl = best_labels(xt)
-    yl = best_labels(yt)
-    ticks = Ticks(xt, xl, yt, yl)
-
-    box = Box(minimum(xt), maximum(xt), minimum(yt), maximum(yt))
-    width = 800
-    height = 600
-    margins = (80, 80, 80, 80)
-    windowbackgroundcolor = Color(:white)
-    as = AxisStyle()
-    ax = pk.AxisMap(width, height, margins, box, false, true)
-    function fn(ctx)
-        rect(ctx, Point(0,0), Point(width, height); fillcolor =  windowbackgroundcolor)
-        drawaxis(ctx, ax, ticks, box, as)
-        setclipbox(ctx, ax, box)
-        line(ax, ctx, Point.(zip(x, y)); linestyle=LineStyle(Color(:blue), 1))
-    end
-    d = pk.Drawable(width, height)
-    over(fn, d) 
-    qsave(d, "basic3.pdf")
-end
-
+# # doing it yourself
+# # in testset_drawaxis
+# function main3()
+#     x = 0:0.1:10
+#     y = x.*x/10
+#     xt = best_ticks(minimum(x), maximum(x), 10)
+#     yt = best_ticks(minimum(y), maximum(y), 10)
+#     xl = best_labels(xt)
+#     yl = best_labels(yt)
+#     ticks = Ticks(xt, xl, yt, yl)
+#     box = Box(minimum(xt), maximum(xt), minimum(yt), maximum(yt))
+#     width = 800
+#     height = 600
+#     margins = (80, 80, 80, 80)
+#     windowbackgroundcolor = Color(:white)
+#     as = AxisStyle()
+#     ax = pk.AxisMap(width, height, margins, box, false, true)
+#     function fn(ctx)
+#         rect(ctx, Point(0,0), Point(width, height); fillcolor =  windowbackgroundcolor)
+#         drawaxis(ctx, ax, ticks, box, as)
+#         setclipbox(ctx, ax, box)
+#         line(ax, ctx, Point.(zip(x, y)); linestyle=LineStyle(Color(:blue), 1))
+#     end
+#     d = pk.Drawable(width, height)
+#     over(fn, d) 
+#     qsave(d, "basic3.pdf")
+# end
 
 
 
-# two plots, one above the other
-function main4()
-    x1 = -0.1:0.1:1.3
-    y1 = x1.*x1
-    d1 = plot(x1, y1; height=400)
 
-    x2 = -0.2:0.05:1.4
-    y2 = x2.*(x2 .- 0.6) .* (x2 .- 1)
-    d2 = plot(x2, y2; height=320, tmargin=0)
-    
-    qsave(vbox(d1, d2), "basic4.pdf")
-end
+# # two plots, one above the other
+# # # now in testset_axisbuilder
+# function main4()
+#     x1 = -0.1:0.1:1.3
+#     y1 = x1.*x1
+#     d1 = plot(x1, y1; height=400)
+#
+#     x2 = -0.2:0.05:1.4
+#     y2 = x2.*(x2 .- 0.6) .* (x2 .- 1)
+#     d2 = plot(x2, y2; height=320, tmargin=0)
+#
+#     qsave(vbox(d1, d2), "basic4.pdf")
+# end
 
 
 # a simple animated plot
