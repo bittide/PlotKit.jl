@@ -191,206 +191,227 @@ end
 #     qsave(f, "basic8.pdf")
 # end
 
-# overlays on basic plot
-function main9()
-    x = -0.1:0.1:1.3
-    y = x.*x
-    d = plot(x,y)
-    over(d; clip=false) do ctx
-        line(d.axis.ax, ctx, Point(0, 0), Point(1, 1);
-             linestyle = LineStyle( Color(:black), 2))
-        line(ctx, Point(0, 0), Point(400, 300);
-             linestyle = LineStyle( Color(:blue), 2))
-    end
-    qsave(d, "basic9.pdf")
-end
+# # overlays on basic plot
+# # in testset_axisbuilder
+# function main9()
+#     x = -0.1:0.1:1.3
+#     y = x.*x
+#     d = plot(x,y)
+#     over(d; clip=false) do ctx
+#         line(d.axis.ax, ctx, Point(0, 0), Point(1, 1);
+#              linestyle = LineStyle( Color(:black), 2))
+#         line(ctx, Point(0, 0), Point(400, 300);
+#              linestyle = LineStyle( Color(:blue), 2))
+#     end
+#     qsave(d, "basic9.pdf")
+# end
 
-# many subplots
-function main10()
-    fns = [sin, cos, exp, tan, sec, sinc]
-    x = collect(-1:0.01:1)
-    fs = [ plot(x, a.(x)) for a in fns ]
-    qsave(hvbox(stack(fs, 3)), "basic10.pdf")
-end
+# # many subplots
+# # in testset_axisbuilder
+# function main10()
+#     fns = [sin, cos, exp, tan, sec, sinc]
+#     x = collect(-1:0.01:1)
+#     fs = [ plot(x, a.(x)) for a in fns ]
+#     qsave(hvbox(stack(fs, 3)), "basic10.pdf")
+# end
 
-# using the animator to show a fixed plot
-function main11()
-    x = -0.1:0.1:1.3
-    y = x.*x
-    qsee(plot(x,y); tmax = 1)
-end
+# # using the animator to show a fixed plot
+# # in plotkitgl/testset
+# function main11()
+#     x = -0.1:0.1:1.3
+#     y = x.*x
+#     qsee(plot(x,y); tmax = 1)
+# end
 
-# set marker styles
-function main12()
-    x = -0.3:0.1:1.3
-    y = x.*x
-    data = pzip(x,y)
-    markerfn = (ax, ctx, p, args...) -> circle(ax, ctx, p, 10;
-                                               linestyle=LineStyle(Color(:red),2),
-                                               fillcolor = Color(:cyan))
-    d = plot(data; ymin=-0.2, markerfn)
-    qsee(d; tmax = 1)
-end
+# # set marker styles
+# # in testset_axisbuilder
+# function main12()
+#     x = -0.3:0.1:1.3
+#     y = x.*x
+#     data = pzip(x,y)
+#     markerfn = (ax, ctx, p, args...) -> circle(ax, ctx, p, 10;
+#                                                linestyle=LineStyle(Color(:red),2),
+#                                                fillcolor = Color(:cyan))
+#     d = plot(data; ymin=-0.2, markerfn)
+#     qsee(d; tmax = 1)
+# end
 
-# partial diy
-function main13()
-    p = Point[(x, x.*x) for x = 1:0.5:10]
-    axis = Axis(p)
-    d = Drawable(axis)
-    over(d) do ctx
-        line(d.axis.ax, ctx, p; linestyle=LineStyle(Color(:black),1))
-        for x in p
-            circle(d.axis.ax, ctx, x, 3; fillcolor = Color(0.9,0.4,0.4))
-        end
-    end
-    qsave(d, "basic13.pdf")
-end
-
-
-
-# change the axis style
-function main14()
-    data = Point[(x, x*x) for x in -0.1:0.01:1.85]
-    opts = getoptions(; axisstyle_edgelinestyle = LineStyle(0.5 * Color(:white), 2),
-                      axisstyle_gridlinestyle = LineStyle(Color(0.5,0.5,0.7), 1),
-                      axisstyle_backgroundcolor = Color(:white),
-                      axisstyle_drawbox = true,
-                      windowbackgroundcolor = 0.9 * Color(:white)
-                      )
-    d = plot(data; opts...)
-    over(d) do ctx
-        line(d.axis.ax, ctx, Point(1,1), Point(4, 3);
-             linestyle = LineStyle(Color(:green),2))
-    end
-    qsave(d, "basic14.pdf")
-end
-
-# draw on existing plot
-function main15()
-    data = Point[(x, x*x) for x in -0.1:0.01:1.85]
-    d = plot(data)
-    over(d) do ctx
-        line(d.axis.ax, ctx, Point(1,1), Point(4, 3);
-             linestyle = LineStyle(Color(:green), 2))
-    end
-    qsave(d, "basic15.pdf")
-end
+# # partial diy
+# # no longer needed
+# function main13()
+#     p = Point[(x, x.*x) for x = 1:0.5:10]
+#     axis = Axis(p)
+#     d = Drawable(axis)
+#     over(d) do ctx
+#         line(d.axis.ax, ctx, p; linestyle=LineStyle(Color(:black),1))
+#         for x in p
+#             circle(d.axis.ax, ctx, x, 3; fillcolor = Color(0.9,0.4,0.4))
+#         end
+#     end
+#     qsave(d, "basic13.pdf")
+# end
 
 
-# draw using cairo
-function main16()
-    d = Drawable(800, 600) do ctx
-        rect(ctx, Point(0,0), Point(800, 600); fillcolor = Color(:red))
-        line(ctx, Point(10, 20), Point(800, 450);
-             linestyle = LineStyle(Color(:blue), 5))
-        line(ctx, Point(10, 500), Point(600, 50);
-             linestyle = LineStyle(Color(:green), 5))
-    end
-    qsave(d, "basic16.png")
-end
+
+# # change the axis style
+# # in testset_axisbuilder
+# function main14()
+#     data = Point[(x, x*x) for x in -0.1:0.01:1.85]
+#     opts = getoptions(; axisstyle_edgelinestyle = LineStyle(0.5 * Color(:white), 2),
+#                       axisstyle_gridlinestyle = LineStyle(Color(0.5,0.5,0.7), 1),
+#                       axisstyle_backgroundcolor = Color(:white),
+#                       axisstyle_drawbox = true,
+#                       windowbackgroundcolor = 0.9 * Color(:white)
+#                       )
+#     d = plot(data; opts...)
+#     over(d) do ctx
+#         line(d.axis.ax, ctx, Point(1,1), Point(4, 3);
+#              linestyle = LineStyle(Color(:green),2))
+#     end
+#     qsave(d, "basic14.pdf")
+# end
 
 
-# check limits
-function main17()
-    x1 = -2:0.1:2
-    y1 = x1
-    x2 = -0.5:0.1:0.7
-    y2 = x2.*x2 .-3
-    x2 = x2 
-    d = plot([pzip(x1,y1), pzip(x2,y2)])
-    qsave(d, "basic17.pdf")
-end
-
-# directed graph 
-function main18()
-    links = [[1, 2], [1, 4], [2, 3], [2, 5], [3, 6], [4, 5], [5, 6]]
-    x = Point[(0, -2), (1, 0), (2, -2), (0, 1), (1, 1), (2, 1)]
-    arrows=((0.5, TriangularArrow()),)
-    f = drawgraph(links, x; graph_paths = Path(; arrows))
-    qsave(f, "basic18.pdf")
-end
+# # draw on existing plot
+# # in testset_axisbuilder
+# function main15()
+#     data = Point[(x, x*x) for x in -0.1:0.01:1.85]
+#     d = plot(data)
+#     over(d) do ctx
+#         line(d.axis.ax, ctx, Point(1,1), Point(4, 3);
+#              linestyle = LineStyle(Color(:green), 2))
+#     end
+#     qsave(d, "basic15.pdf")
+# end
 
 
-function main19()
-    d = Drawable(Axis(; xmin = -10, xmax = 20, ymin=-20, ymax=20))
-    over(d) do ctx
-        circle(d.axis.ax, ctx, Point(0,0), 50;
-               linestyle = LineStyle(Color(:black), 4))
-    end
-    qsave(d, "basic19.pdf")
-end
-
-function main20()
-    d= Drawable(800, 600) do ctx
-        rect(ctx, Point(300,20), Point(200, 100);
-             fillcolor = Color(1,0.8,0.8))
-        text(ctx, Point(300,120), 50, Color(:black),
-             "Hellogello"; horizontal = "left", vertical="bottom")
-    end
-    qsave(d, "basic20.pdf")
-end
+# # draw using cairo
+# # in testset_plotkitcairo
+# function main16()
+#     d = Drawable(800, 600) do ctx
+#         rect(ctx, Point(0,0), Point(800, 600); fillcolor = Color(:red))
+#         line(ctx, Point(10, 20), Point(800, 450);
+#              linestyle = LineStyle(Color(:blue), 5))
+#         line(ctx, Point(10, 500), Point(600, 50);
+#              linestyle = LineStyle(Color(:green), 5))
+#     end
+#     qsave(d, "basic16.png")
+# end
 
 
-# curved directed graph
-function main21()
-    links = [[1, 2], [2,1], [1, 4], [2, 3], [2, 5], [5,2], [3, 2], [4, 5], [5, 6]]
-    x = Point[(0, -2), (1, -0.5), (2, -2), (0, 1), (1, 1), (2, 1)]
-    arrows=((0.5, TriangularArrow()),)
-    f = drawgraph(links, x; lmargin=20,
-                  graph_paths = CurvedPath(; arrows))
-    qsave(f, "basic21.pdf")
-end
+# # check limits
+# # in testset_axisbuilder
+# function main17()
+#     x1 = -2:0.1:2
+#     y1 = x1
+#     x2 = -0.5:0.1:0.7
+#     y2 = x2.*x2 .-3
+#     x2 = x2 
+#     d = plot([pzip(x1,y1), pzip(x2,y2)])
+#     qsave(d, "basic17.pdf")
+# end
 
-# NEEDS to be fixed, slow and bad
-# test graph layout
-function main22()
-    links = [[1, 2], [1, 4], [2, 3], [2, 5], [3, 6], [4, 5], [5, 6]]
-    x = graphlayout(links, 6)
-    f = drawgraph(links, x)
-    qsave(f, "basic22.pdf")
-end
-
-
-# checking out limits
-function main23()
-    x = collect(-2:0.01:2)
-    y = x.*x
-    f1 = plot(x, y)
-    f2 = plot(x, y; xmin = -1, xmax = 1.5, ymax=5)
-    f3 = plot(x, y; xmin = -1, xmax = 6.5)
-    f4 = plot(x, y; ymin = -1, ymax = 10)
-    qsave(hvbox([f1 f2; f3 f4]), "basic23.pdf")
-end
-
-# plotting a bunch of data, with missings
-function main24()
-    x = collect(-2:0.01:2)
-    y1 = x.*x
-    y2 = x.*x.*x .- 1
-    y3 = sin.(x)
-
-    A = Array{Any}(missing, 2,2)
-    A[1,1] = pzip(x,y1)
-    A[2,1] = pzip(x,y2)
-    A[2,2] = pzip(x,y3) 
-    f = plot(A)
-    qsave(f, "basic24.pdf")
-end
+# # directed graph
+# # in plotkitdiagrams/testset
+# function main18()
+#     links = [[1, 2], [1, 4], [2, 3], [2, 5], [3, 6], [4, 5], [5, 6]]
+#     x = Point[(0, -2), (1, 0), (2, -2), (0, 1), (1, 1), (2, 1)]
+#     arrows=((0.5, TriangularArrow()),)
+#     f = drawgraph(links, x; graph_paths = Path(; arrows))
+#     qsave(f, "basic18.pdf")
+# end
 
 
-# checking out limits more
-function main25()
-    x = collect(-1:0.01:2)
-    y = x.*x
-    f1 = plot(x, y)
-    f2 = plot(x, y; xmax = 2.7) 
-    f3 = plot(x, y; tickbox_xmax = 2.7, axisbox_xmax = 2.7)
+# # in testset_axisbuilder
+# function main19()
+#     d = Drawable(Axis(; xmin = -10, xmax = 20, ymin=-20, ymax=20))
+#     over(d) do ctx
+#         circle(d.axis.ax, ctx, Point(0,0), 50;
+#                linestyle = LineStyle(Color(:black), 4))
+#     end
+#     qsave(d, "basic19.pdf")
+# end
 
-    f4 = plot(x, y; tickbox_xmax = 1.3)
-    f5 = plot(x, y; axisbox_xmax = 1.3)
-    f6 = plot(x, y; axisbox_xmax = 1.3, tickbox_xmax = 1.3)
-    qsave(hvbox([f1 f2 f3; f4 f5 f6]), "basic25.pdf")
-end
+# # in plotkitcairo
+# function main20()
+#     d= Drawable(800, 600) do ctx
+#         rect(ctx, Point(300,20), Point(200, 100);
+#              fillcolor = Color(1,0.8,0.8))
+#         text(ctx, Point(300,120), 50, Color(:black),
+#              "Hellogello"; horizontal = "left", vertical="bottom")
+#     end
+#     qsave(d, "basic20.pdf")
+# end
+
+
+# # curved directed graph
+# # in plotkitdiagrams/testset
+# function main21()
+#     links = [[1, 2], [2,1], [1, 4], [2, 3], [2, 5], [5,2], [3, 2], [4, 5], [5, 6]]
+#     x = Point[(0, -2), (1, -0.5), (2, -2), (0, 1), (1, 1), (2, 1)]
+#     arrows=((0.5, TriangularArrow()),)
+#     f = drawgraph(links, x; lmargin=20,
+#                   graph_paths = CurvedPath(; arrows))
+#     qsave(f, "basic21.pdf")
+# end
+
+
+# # NEEDS to be fixed, slow and bad
+# # test graph layout#
+# # in plotkitdiagrams/testset
+# function main22()
+#     links = [[1, 2], [1, 4], [2, 3], [2, 5], [3, 6], [4, 5], [5, 6]]
+#     x = graphlayout(links, 6)
+#     f = drawgraph(links, x)
+#     qsave(f, "basic22.pdf")
+# end
+
+
+# # checking out limits
+# # in testset_axisbuilder
+# function main23()
+#     x = collect(-2:0.01:2)
+#     y = x.*x
+#     f1 = plot(x, y)
+#     f2 = plot(x, y; xmin = -1, xmax = 1.5, ymax=5)
+#     f3 = plot(x, y; xmin = -1, xmax = 6.5)
+#     f4 = plot(x, y; ymin = -1, ymax = 10)
+#     qsave(hvbox([f1 f2; f3 f4]), "basic23.pdf")
+# end
+
+
+# # plotting a bunch of data, with missings
+# # no longer part of plotkit
+# function main24()
+#     x = collect(-2:0.01:2)
+#     y1 = x.*x
+#     y2 = x.*x.*x .- 1
+#     y3 = sin.(x)
+
+#     A = Array{Any}(missing, 2,2)
+#     A[1,1] = pzip(x,y1)
+#     A[2,1] = pzip(x,y2)
+#     A[2,2] = pzip(x,y3) 
+#     f = plot(A)
+#     qsave(f, "basic24.pdf")
+# end
+
+
+# # checking out limits more
+# # in testset_axisbuilder
+# function main25()
+#     x = collect(-1:0.01:2)
+#     y = x.*x
+#     f1 = plot(x, y)
+#     f2 = plot(x, y; xmax = 2.7) 
+#     f3 = plot(x, y; tickbox_xmax = 2.7, axisbox_xmax = 2.7)
+
+#     f4 = plot(x, y; tickbox_xmax = 1.3)
+#     f5 = plot(x, y; axisbox_xmax = 1.3)
+#     f6 = plot(x, y; axisbox_xmax = 1.3, tickbox_xmax = 1.3)
+#     qsave(hvbox([f1 f2 f3; f4 f5 f6]), "basic25.pdf")
+# end
+
 
 # beziers
 function main26()
