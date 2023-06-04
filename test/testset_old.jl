@@ -413,193 +413,209 @@ end
 # end
 
 
-# beziers
-function main26()
-    d = Drawable(800, 600) do ctx
-        rect(ctx, Point(0,0), Point(800, 600); fillcolor = Color(:white))
-        bps = curve_from_endpoints(Point(100,100), Point(600,200), pi/6, pi/6, 0.3)
-        curve(ctx, bps...; linestyle = LineStyle( Color(:black), 2))
+# # beziers
+# # now in plotkitcairo/testset
+# function main26()
+#     d = Drawable(800, 600) do ctx
+#         rect(ctx, Point(0,0), Point(800, 600); fillcolor = Color(:white))
+#         bps = curve_from_endpoints(Point(100,100), Point(600,200), pi/6, pi/6, 0.3)
+#         curve(ctx, bps...; linestyle = LineStyle( Color(:black), 2))
+#         for i=0:0.1:0.5
+#             p = bezier_point(i, bps...)
+#             circle(ctx, p, 10;fillcolor = Color(:red))
+#         end
+#     end
+#     qsave(d, "basic26.pdf")
+# end
 
-        for i=0:0.1:0.5
-            p = bezier_point(i, bps...)
-            circle(ctx, p, 10;fillcolor = Color(:red))
-        end
-    end
-    qsave(d, "basic26.pdf")
-end
+# 
+# # beziers
+# # in testset_axisbuilder
+# function main27()
+#     d = Drawable(Axis(; xmin=0, xmax = 29, ymin = 0, ymax = 3,
+#                  yoriginatbottom = true, axisequal = false))
+#     over(d) do ctx
+#         p = Point(1,1)
+#         q = Point(6,2)
+#         th1 = pi/6
+#         th2 = pi/6
+#         ax = d.axis.ax
+# 
+#         # bad choice, angles wrong in axis space
+#         bps = curve_from_endpoints(p, q, th1, th2, 0.3)
+#         curve(d.axis.ax, ctx, bps...; linestyle = LineStyle( Color(:black), 4))
+#         a = bezier_point(0.3, bps...)
+#         circle(d.axis.ax, ctx, a, 10;fillcolor = Color(:red))
+# 
+#         # good choice, angles correct in pixel space
+#         bps = curve_from_endpoints(ax(p), ax(q), th1, th2, 0.3)
+#         curve(ctx, bps...; linestyle = LineStyle(Color(:cyan), 1))
+#         a = bezier_point(0.3, bps...)
+#         circle(ctx, a, 5;fillcolor = Color(:green))
+# 
+#         bps1 = curve_from_endpoints(ax(p), ax(q), th1, th2, 0.3)
+#         #println.("cfe composed with ax = ", bps1)
+# 
+#         bps2 = ax.(curve_from_endpoints(p, q, th1, th2, 0.3))
+#         #println.("ax composed with cfe = ", bps2)
+#         
+#     end
+#     qsave(d, "basic27.pdf")
+# end
+# 
 
-    
-# beziers
-function main27()
-    d = Drawable(Axis(; xmin=0, xmax = 29, ymin = 0, ymax = 3,
-                 yoriginatbottom = true, axisequal = false))
-    over(d) do ctx
-        p = Point(1,1)
-        q = Point(6,2)
-        th1 = pi/6
-        th2 = pi/6
-        ax = d.axis.ax
+# 
+# # plotting sequentially
+# # removed as no longer useful
+# function main28()
+#     x = collect(-2:0.01:2)
+#     y1 = x.*x.*x .- 1
+#     y2 = x.*x
+# 
+#     d = plot(x, y1)
+#     over(d) do ctx
+#         plot(d.axis.ax, ctx, pzip(x, y2))
+#         plot(d.axis.ax, ctx, pzip(x, y2.-1); linestyle=LineStyle(Color(:blue),3))
+#     end
+#     qsave(d, "basic28.pdf")
+# end
+# 
 
-        # bad choice, angles wrong in axis space
-        bps = curve_from_endpoints(p, q, th1, th2, 0.3)
-        curve(d.axis.ax, ctx, bps...; linestyle = LineStyle( Color(:black), 4))
-        a = bezier_point(0.3, bps...)
-        circle(d.axis.ax, ctx, a, 10;fillcolor = Color(:red))
+# # many colors
+# # removed as no longer useful
+# function main29()
+#     x = collect(-1:0.01:1)
+#     fns = [sin, cos, exp, tan, sec, sinc]
+#     fs = [ pzip(x, a.(x)) for a in fns ]
+#     qsave(plot(fs), "basic29.pdf")
+# end
 
-        # good choice, angles correct in pixel space
-        bps = curve_from_endpoints(ax(p), ax(q), th1, th2, 0.3)
-        curve(ctx, bps...; linestyle = LineStyle(Color(:cyan), 1))
-        a = bezier_point(0.3, bps...)
-        circle(ctx, a, 5;fillcolor = Color(:green))
-
-        bps1 = curve_from_endpoints(ax(p), ax(q), th1, th2, 0.3)
-        #println.("cfe composed with ax = ", bps1)
-
-        bps2 = ax.(curve_from_endpoints(p, q, th1, th2, 0.3))
-        #println.("ax composed with cfe = ", bps2)
-        
-    end
-    qsave(d, "basic27.pdf")
-end
-
-
-
-# plotting sequentially
-function main28()
-    x = collect(-2:0.01:2)
-    y1 = x.*x.*x .- 1
-    y2 = x.*x
-
-    d = plot(x, y1)
-    over(d) do ctx
-        plot(d.axis.ax, ctx, pzip(x, y2))
-        plot(d.axis.ax, ctx, pzip(x, y2.-1); linestyle=LineStyle(Color(:blue),3))
-    end
-    qsave(d, "basic28.pdf")
-end
-
-
-# many colors
-function main29()
-    x = collect(-1:0.01:1)
-    fns = [sin, cos, exp, tan, sec, sinc]
-    fs = [ pzip(x, a.(x)) for a in fns ]
-    qsave(plot(fs), "basic29.pdf")
-end
-
-# doing it yourself
-function main30()
-    x = 0:0.1:10
-    y = x.*x/10
-
-    desired_range = Box(xmin = 0, xmax = 10, ymin = 0, ymax = 30)
-    ticks = Ticks(desired_range, 10, 10)
-    range = get_tick_extents(ticks)
-    width = 800
-    height = 600
-    margins = (80, 80, 80, 80)
-    windowbackgroundcolor = Color(:white)
-    as = AxisStyle()
-    ax = pk.AxisMap(width, height, margins, range, false, true)
-    function fn(ctx)
-        rect(ctx, Point(0,0), Point(width, height); fillcolor =  windowbackgroundcolor)
-        drawaxis(ctx, ax, ticks, range, as)
-        setclipbox(ctx, ax, range)
-        line(ax, ctx, Point.(zip(x, y)); linestyle=LineStyle(Color(:black), 1))
-    end
-    d = pk.Drawable(width, height)
-    over(fn, d) 
-    qsave(d, "basic30.pdf")
-end
-
-# directed graph with labels
-function main31()
-    links = [[1, 2], [1, 4], [2, 3], [2, 5], [3, 6], [4, 5], [5, 6]]
-    x = Point[(0, -2), (1, 0), (2, -2), (0, 1), (1, 1), (2, 1)]
-    n = length(x)
-    m = length(links)
-  
-    graph_nodes = [Node(; text=string(i), fillcolor = Color(0,0,0.6)) for i=1:n]
-
-    arrows = ((0.8, TriangularArrow()),)
-    node(i) = (0.5, Node(; fillcolor = Color(:white),
-                         textcolor = Color(:black),
-                         linestyle = nothing,
-                         text=string(i)))
-    
-    graph_paths = [Path(; arrows, nodes = (node(i),)) for i=1:m]
-
-    f = drawgraph(links, x; graph_nodes, graph_paths)
-    qsave(f, "basic31.pdf")
-end
-#
-# fully sequential
-#
-function main32()
-    width = 1200
-    height = 600
-    fname = plotpath("basic32.pdf")
-    
-    x = -0.1:0.01:1.85
-    y = x.*x
-    data = pzip(x,y)
-
-    surface, ctx = makesurface(width, height, fname)
-    axis = Axis(data; width, height)
-    drawaxis(ctx, axis)
-    drawplot(axis.ax, ctx, data)
-    qclosesurface(surface, fname)
-end
-
-function main34()
-    axis = Axis(; xmin=-2, xmax=15, ymin=-2, ymax=20)
-    r = Drawable(axis)
-    over(r) do ctx
-        x = 1
-        for i = 1:10
-            circle(r.axis.ax, ctx, Point(x, 5), 10; fillcolor = Color(:green))
-            x += 1
-        end
-        for i = 1:10
-            circle(r.axis.ax, ctx, Point(i, 2), 10; fillcolor = Color(:red))
-        end
-    end
-    qsave(r, "basic34.pdf")
-end
-
-function main35()
-    axis = Axis(; xmin=-2, xmax=15, ymin=-2, ymax=20)
-    d = Drawable(axis)
-    x = 1
-    for i = 1:10
-        over(d) do ctx
-            circle(d.axis.ax, ctx, Point(x, 5), 10; fillcolor = Color(:green))
-        end
-        x += 1
-    end
-    for i = 1:10
-        over(d) do ctx
-            circle(d.axis.ax, ctx, Point(i, 2), 10; fillcolor = Color(:red))
-        end
-    end
-    qsave(d, "basic35.pdf")
-end
+# 
+# 
+# # doing it yourself
+# # in testset_drawaxis
+# function main30()
+#     x = 0:0.1:10
+#     y = x.*x/10
+# 
+#     desired_range = Box(xmin = 0, xmax = 10, ymin = 0, ymax = 30)
+#     ticks = Ticks(desired_range, 10, 10)
+#     range = get_tick_extents(ticks)
+#     width = 800
+#     height = 600
+#     margins = (80, 80, 80, 80)
+#     windowbackgroundcolor = Color(:white)
+#     as = AxisStyle()
+#     ax = pk.AxisMap(width, height, margins, range, false, true)
+#     function fn(ctx)
+#         rect(ctx, Point(0,0), Point(width, height); fillcolor =  windowbackgroundcolor)
+#         drawaxis(ctx, ax, ticks, range, as)
+#         setclipbox(ctx, ax, range)
+#         line(ax, ctx, Point.(zip(x, y)); linestyle=LineStyle(Color(:black), 1))
+#     end
+#     d = pk.Drawable(width, height)
+#     over(fn, d) 
+#     qsave(d, "basic30.pdf")
+# end
 
 
+# 
+# # directed graph with labels
+# now in plotkitdiagrams/testset
+# function main31()
+#     links = [[1, 2], [1, 4], [2, 3], [2, 5], [3, 6], [4, 5], [5, 6]]
+#     x = Point[(0, -2), (1, 0), (2, -2), (0, 1), (1, 1), (2, 1)]
+#     n = length(x)
+#     m = length(links)
+#   
+#     graph_nodes = [Node(; text=string(i), fillcolor = Color(0,0,0.6)) for i=1:n]
+# 
+#     arrows = ((0.8, TriangularArrow()),)
+#     node(i) = (0.5, Node(; fillcolor = Color(:white),
+#                          textcolor = Color(:black),
+#                          linestyle = nothing,
+#                          text=string(i)))
+#     
+#     graph_paths = [Path(; arrows, nodes = (node(i),)) for i=1:m]
+# 
+#     f = drawgraph(links, x; graph_nodes, graph_paths)
+#     qsave(f, "basic31.pdf")
+# end
 
-# offset two plots
-function main37()
-    x1 = -0.1:0.1:1.3
-    y1 = x1.*x1
-    d1 = plot(x1, y1)
+# 
+# 
+# #
+# # fully sequential
+# # # no longer necessary
+# function main32()
+#     width = 1200
+#     height = 600
+#     fname = plotpath("basic32.pdf")
+#     
+#     x = -0.1:0.01:1.85
+#     y = x.*x
+#     data = pzip(x,y)
+# 
+#     surface, ctx = makesurface(width, height, fname)
+#     axis = Axis(data; width, height)
+#     drawaxis(ctx, axis)
+#     drawplot(axis.ax, ctx, data)
+#     qclosesurface(surface, fname)
+# end
+# 
+# # circles
+# # in testset_axisbuilder
+# function main34()
+#     axis = Axis(; xmin=-2, xmax=15, ymin=-2, ymax=20)
+#     r = Drawable(axis)
+#     over(r) do ctx
+#         x = 1
+#         for i = 1:10
+#             circle(r.axis.ax, ctx, Point(x, 5), 10; fillcolor = Color(:green))
+#             x += 1
+#         end
+#         for i = 1:10
+#             circle(r.axis.ax, ctx, Point(i, 2), 10; fillcolor = Color(:red))
+#         end
+#     end
+#     qsave(r, "basic34.pdf")
+# end
 
-    x2 = -0.2:0.05:1.4
-    y2 = x2.*(x2 .- 0.6) .* (x2 .- 1)
-    d2 = plot(x2, y2)
+# # no longer necessary
+# function main35()
+#     axis = Axis(; xmin=-2, xmax=15, ymin=-2, ymax=20)
+#     d = Drawable(axis)
+#     x = 1
+#     for i = 1:10
+#         over(d) do ctx
+#             circle(d.axis.ax, ctx, Point(x, 5), 10; fillcolor = Color(:green))
+#         end
+#         x += 1
+#     end
+#     for i = 1:10
+#         over(d) do ctx
+#             circle(d.axis.ax, ctx, Point(i, 2), 10; fillcolor = Color(:red))
+#         end
+#     end
+#     qsave(d, "basic35.pdf")
+# end
 
-    d = pk.offset(d1, d2, 400, 200)
-    qsave(d, "basic37.pdf")
-end
+
+
+# # offset two plots
+# in tesset_axisbuilder
+# function main37()
+#     x1 = -0.1:0.1:1.3
+#     y1 = x1.*x1
+#     d1 = plot(x1, y1)
+
+#     x2 = -0.2:0.05:1.4
+#     y2 = x2.*(x2 .- 0.6) .* (x2 .- 1)
+#     d2 = plot(x2, y2)
+
+#     d = pk.offset(d1, d2, 400, 200)
+#     qsave(d, "basic37.pdf")
+# end
 
 
     
