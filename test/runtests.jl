@@ -1,13 +1,13 @@
 
-module TestSet
 
 using PlotKit
+using PlotKitCairo
+using PlotKitAxes
+using PlotKitDiagrams
+using PlotKitGL
 
-using Test
-include("testset.jl")
-end
 
-using .TestSet
-TestSet.main()
+include(joinpath(pkgdir(PlotKitCairo), "test/testset.jl"))
+
 
 
