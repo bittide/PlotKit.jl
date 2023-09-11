@@ -4,6 +4,7 @@ module PlotKit
 using PlotKitAxes
 using PlotKitDiagrams
 using PlotKitGL
+using PlotKitCharts
 
 function reexport(m)
     for a in names(m)
@@ -14,5 +15,6 @@ end
 reexport(PlotKitAxes)
 reexport(PlotKitDiagrams)
 reexport(PlotKitGL)
+reexport(PlotKitCharts)
 
 end
