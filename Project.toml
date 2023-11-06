@@ -8,5 +8,7 @@ Cairo = "159f3aea-2a34-519c-b102-8c37f9878175"
 ModernGL = "66fc600b-dfda-50eb-8b99-91cfa97b1301"
 GLFW = "f7f18e0c-5ee9-5ccd-a5bf-e8befd85ed98"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-
-
+PlotKitAxes = "d206e830-6474-4927-8e6c-338e8092c5c7"
+PlotKitDiagrams = "64f37de4-b5f6-47b0-be42-d75bd846556a"
+PlotKitGL = "482ab07a-b082-4a98-80a0-51c2b3942dee"
+PlotKitCharts = "876e3276-866e-4d7d-8cf4-c295b4e7fa09"
