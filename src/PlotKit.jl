@@ -17,4 +17,12 @@ reexport(PlotKitDiagrams)
 reexport(PlotKitGL)
 reexport(PlotKitCharts)
 
+# For extensions
+abstract type Extension end
+export setup3d
+setup3d(a::Extension) = println("Hello")
+
+
+
+
 end
