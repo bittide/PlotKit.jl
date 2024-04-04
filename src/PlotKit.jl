@@ -3,7 +3,6 @@ module PlotKit
 
 using PlotKitAxes
 using PlotKitDiagrams
-using PlotKitGL
 using PlotKitCharts
 
 function reexport(m)
@@ -14,7 +13,6 @@ end
 
 reexport(PlotKitAxes)
 reexport(PlotKitDiagrams)
-reexport(PlotKitGL)
 reexport(PlotKitCharts)
 
 const extensions = Dict()
