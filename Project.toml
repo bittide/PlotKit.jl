@@ -1,7 +1,7 @@
 name = "PlotKit"
 authors = ["Sanjay Lall <sanjaylall@google.com>"]
 uuid = "003d7de4-8e60-4dbf-84f8-37f925e78aff"
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Cairo = "159f3aea-2a34-519c-b102-8c37f9878175"
